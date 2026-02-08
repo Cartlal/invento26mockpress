@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Lock, Target, CheckCircle, Gauge } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function Voting() {
     const [eventState, setEventState] = useState(null);

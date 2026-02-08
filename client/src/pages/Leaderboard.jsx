@@ -3,7 +3,7 @@ import axios from "axios";
 import { socket } from "../socket";
 import { Trophy, Medal, Award, Download, Users, TrendingUp } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function Leaderboard() {
     const [participants, setParticipants] = useState([]);

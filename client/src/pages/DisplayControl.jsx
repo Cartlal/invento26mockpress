@@ -24,7 +24,7 @@ import {
     Unlock
 } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function DisplayControl() {
     const navigate = useNavigate();

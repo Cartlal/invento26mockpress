@@ -3,7 +3,7 @@ import axios from "axios";
 import { ShieldAlert, RefreshCw, Search, ArrowLeft } from 'lucide-react';
 import { Link } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function Logs() {
     const [logs, setLogs] = useState([]);
@@ -101,10 +101,10 @@ function Logs() {
                                             </td>
                                             <td className="p-4 font-bold">
                                                 <span className={`px-2 py-1 text-xs border ${log.action.includes('FAILED') || log.action.includes('DELETED')
-                                                        ? 'border-spy-red text-spy-red bg-spy-red/10'
-                                                        : log.action.includes('SUCCESS') || log.action.includes('ADDED')
-                                                            ? 'border-spy-green text-spy-green bg-spy-green/10'
-                                                            : 'border-spy-blue text-spy-blue bg-spy-blue/10'
+                                                    ? 'border-spy-red text-spy-red bg-spy-red/10'
+                                                    : log.action.includes('SUCCESS') || log.action.includes('ADDED')
+                                                        ? 'border-spy-green text-spy-green bg-spy-green/10'
+                                                        : 'border-spy-blue text-spy-blue bg-spy-blue/10'
                                                     }`}>
                                                     {log.action}
                                                 </span>

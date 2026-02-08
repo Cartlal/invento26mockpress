@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { UserPlus, Shield, Lock, Key } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function SecretOnboarding() {
     const [username, setUsername] = useState("");
@@ -125,8 +125,8 @@ function SecretOnboarding() {
                                 type="button"
                                 onClick={() => setRole('controller')}
                                 className={`py-2 text-xs font-bold font-orbitron border transition-all ${role === 'controller'
-                                        ? 'bg-spy-blue text-black border-spy-blue'
-                                        : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-blue'
+                                    ? 'bg-spy-blue text-black border-spy-blue'
+                                    : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-blue'
                                     }`}
                             >
                                 CONTROLLER
@@ -135,8 +135,8 @@ function SecretOnboarding() {
                                 type="button"
                                 onClick={() => setRole('display')}
                                 className={`py-2 text-xs font-bold font-orbitron border transition-all ${role === 'display'
-                                        ? 'bg-spy-yellow text-black border-spy-yellow'
-                                        : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-yellow'
+                                    ? 'bg-spy-yellow text-black border-spy-yellow'
+                                    : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-yellow'
                                     }`}
                             >
                                 DISPLAY
@@ -145,8 +145,8 @@ function SecretOnboarding() {
                                 type="button"
                                 onClick={() => setRole('admin')}
                                 className={`py-2 text-xs font-bold font-orbitron border transition-all ${role === 'admin'
-                                        ? 'bg-spy-red text-white border-spy-red'
-                                        : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-red'
+                                    ? 'bg-spy-red text-white border-spy-red'
+                                    : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-red'
                                     }`}
                             >
                                 ADMIN
@@ -158,8 +158,8 @@ function SecretOnboarding() {
                         type="submit"
                         disabled={loading}
                         className={`w-full py-4 mt-6 font-orbitron font-bold text-lg tracking-widest flex items-center justify-center gap-2 border-2 transition-all ${loading
-                                ? 'bg-gray-800 border-gray-800 text-gray-500 cursor-not-allowed'
-                                : 'bg-spy-blue text-black border-spy-blue hover:bg-transparent hover:text-spy-blue shadow-neon-blue'
+                            ? 'bg-gray-800 border-gray-800 text-gray-500 cursor-not-allowed'
+                            : 'bg-spy-blue text-black border-spy-blue hover:bg-transparent hover:text-spy-blue shadow-neon-blue'
                             }`}
                     >
                         {loading ? 'INITIALIZING...' : 'CREATE USER RECORD'}

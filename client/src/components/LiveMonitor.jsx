@@ -3,7 +3,7 @@ import axios from "axios";
 import { socket } from "../socket";
 import { Users, UserCheck, Activity, Mic, List, Eye, Clock } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function LiveMonitor({ participants, eventState }) {
     const [stats, setStats] = useState({

@@ -1,0 +1,26 @@
+{
+    "name": "invento-mock-press",
+    "version": "1.0.0",
+    "description": "Mock Press Voting System for Invento 2026",
+    "main": "server/index.js",
+    "scripts": {
+        "start": "node server/index.js",
+        "build": "npm run build --prefix client",
+        "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+        "postinstall": "npm install --prefix server && npm install --prefix client"
+    },
+    "keywords": [
+        "mern",
+        "voting",
+        "realtime",
+        "socket.io"
+    ],
+    "author": "Invento Team",
+    "license": "ISC",
+    "dependencies": {
+        "concurrently": "^8.2.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

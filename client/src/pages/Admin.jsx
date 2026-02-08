@@ -25,7 +25,7 @@ import {
 import AnalyticsPanel from '../components/AnalyticsPanel';
 import LiveMonitor from "../components/LiveMonitor";
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function Admin() {
     const navigate = useNavigate();

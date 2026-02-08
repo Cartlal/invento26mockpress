@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_URL = "http://localhost:5000/api";
+import { apiUrl as API_URL } from "../config";
 
 function ProtectedRoute({ children, allowedRoles }) {
     const [isAuthenticated, setIsAuthenticated] = useState(null);

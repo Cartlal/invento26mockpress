@@ -29,6 +29,11 @@ const io = new Server(server, {
 app.set('io', io); // Make io accessible in routes
 
 // Routes
+const path = require('path');
+
+// ... (other imports remain, I need to be careful not to overwrite them if not selected)
+
+// Routes
 const adminRoutes = require('./routes/admin');
 const voteRoutes = require('./routes/vote');
 const authRoutes = require('./routes/auth');
@@ -37,7 +42,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/vote', voteRoutes);
 app.use('/api/auth', authRoutes);
 
+// Socket.IO
 io.on('connection', (socket) => {
+    // ... existing socket logic ...
     console.log('User connected:', socket.id);
 
     // Emit total connected clients
@@ -51,10 +58,19 @@ io.on('connection', (socket) => {
     });
 });
 
-// Basic Route
-app.get('/', (req, res) => {
-    res.send('INVENTO 2026 Voting Server Running');
-});
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+    });
+} else {
+    // Basic Route for dev
+    app.get('/', (req, res) => {
+        res.send('INVENTO 2026 Voting Server Running (Dev Mode)');
+    });
+}
 
 // Start Server
 const PORT = process.env.PORT || 5000;
