@@ -1,0 +1,252 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #000;
+  color: #fff;
+  overflow-x: hidden;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-rajdhani {
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.font-mono-tech {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* Spy Grid Background */
+.spy-grid-bg {
+  background-color: #000;
+  background-image:
+    linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Scanline Effect */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.3) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom,
+      rgba(0, 255, 65, 0.1) 0%,
+      transparent 100%);
+  animation: scan 8s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+/* Glitch Effect */
+.glitch {
+  position: relative;
+  animation: glitch-skew 3s infinite;
+}
+
+@keyframes glitch-skew {
+  0% {
+    transform: skew(0deg);
+  }
+
+  10% {
+    transform: skew(-2deg);
+  }
+
+  20% {
+    transform: skew(2deg);
+  }
+
+  30% {
+    transform: skew(0deg);
+  }
+
+  100% {
+    transform: skew(0deg);
+  }
+}
+
+/* Neon Glow */
+.neon-green {
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.8),
+    0 0 20px rgba(0, 255, 65, 0.6),
+    0 0 30px rgba(0, 255, 65, 0.4);
+}
+
+.neon-red {
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
+    0 0 20px rgba(255, 0, 0, 0.6),
+    0 0 30px rgba(255, 0, 0, 0.4);
+}
+
+/* HUD Corners */
+.hud-corners {
+  position: relative;
+}
+
+.hud-corners::before,
+.hud-corners::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid currentColor;
+}
+
+.hud-corners::before {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-corners::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Pulse Animation */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Instagram-Style Emoji Slider */
+.emoji-slider-container {
+  position: relative;
+  padding: 20px 0;
+}
+
+.emoji-slider-track {
+  position: relative;
+  height: 60px;
+  background: linear-gradient(to right,
+      rgba(255, 0, 0, 0.2) 0%,
+      rgba(255, 204, 0, 0.2) 50%,
+      rgba(0, 255, 65, 0.2) 100%);
+  border-radius: 30px;
+  border: 2px solid rgba(0, 255, 65, 0.3);
+  overflow: hidden;
+}
+
+.emoji-slider-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(to right, #ff0000, #ffcc00, #00ff41);
+  border-radius: 30px;
+  transition: width 0.1s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+}
+
+.emoji-slider-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  background: #000;
+  border: 3px solid #00ff41;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  cursor: grab;
+  box-shadow: 0 0 30px rgba(0, 255, 65, 0.8),
+    0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 10;
+}
+
+.emoji-slider-thumb:active {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 0 40px rgba(0, 255, 65, 1),
+    0 6px 20px rgba(0, 0, 0, 0.7);
+}
+
+.emoji-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Hidden range input */
+input[type="range"].emoji-slider-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 20;
+}
+
+input[type="range"].emoji-slider-input::-webkit-slider-thumb {
+  width: 70px;
+  height: 70px;
+  cursor: grab;
+}
+
+input[type="range"].emoji-slider-input:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
