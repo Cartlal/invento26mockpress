@@ -117,7 +117,7 @@ router.get('/logs', async (req, res) => {
     }
 });
 
-// Create Log Entry (Internal or via API)
+// Create Log Entry
 router.post('/log', async (req, res) => {
     try {
         const { action, details, adminId } = req.body;
@@ -133,6 +133,63 @@ router.post('/log', async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+
+// --- LIVE DASHBOARD STATS ---
+
+// Get Overview Stats
+router.get('/stats', async (req, res) => {
+    try {
+        const participantCount = await Participant.countDocuments();
+        const voteCount = await Vote.countDocuments();
+        const uniqueVoters = await Vote.distinct('voterPhone');
+
+        // Live Socket Users
+        const io = req.app.get('io');
+        const liveUsers = io ? io.engine.clientsCount : 0;
+
+        res.json({
+            participantCount,
+            totalVotes: voteCount,
+            uniqueVoterCount: uniqueVoters.length,
+            liveUsers
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Unique Voters List
+router.get('/voters', async (req, res) => {
+    try {
+        const voters = await Vote.aggregate([
+            {
+                $group: {
+                    _id: "$voterPhone",
+                    name: { $first: "$voterName" },
+                    totalVotes: { $sum: 1 },
+                    lastActive: { $max: "$timestamp" }
+                }
+            },
+            { $sort: { lastActive: -1 } }
+        ]);
+        res.json(voters);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Specific Voter History
+router.get('/voter-history/:phone', async (req, res) => {
+    try {
+        const history = await Vote.find({ voterPhone: req.params.phone })
+            .populate('participantId', 'name code')
+            .sort({ timestamp: -1 });
+        res.json(history);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 // --- EVENT CONTROL ---
 

@@ -6,8 +6,12 @@ const EventState = require('../models/EventState');
 
 router.post('/', async (req, res) => {
     try {
-        const { participantId, score, deviceHash } = req.body;
+        const { participantId, score, deviceHash, voterName, voterPhone } = req.body;
         const ipAddress = req.ip;
+
+        if (!voterName) {
+            return res.status(400).json({ error: 'Please enter your name before voting.' });
+        }
 
         // 1. Check if voting is open
         const state = await EventState.findOne();
@@ -21,9 +25,29 @@ router.post('/', async (req, res) => {
 
         // 2. Double-vote Prevention
         // Check if this IP or Device Hash has already voted for this participant
+
+        // Allow multiple votes from localhost for testing
+        // 2. Double-vote Prevention
+        // Check if this IP or Device Hash has already voted for this participant
+
+        const isLocalhost = ipAddress === '::1' || ipAddress === '127.0.0.1' || ipAddress === '1';
+
+        // Build query to check for existing votes
+        // We always check deviceHash and voterName
+        let checkConditions = [
+            { deviceHash },
+            { voterName }
+        ];
+
+        // Only check IP if NOT localhost (allows multiple testers on same machine/wifi if needed, or strictly enforces on prod)
+        // If the user specifically requested "allow if ip is 1", they likely want to test multiple users from localhost.
+        if (!isLocalhost) {
+            checkConditions.push({ ipAddress });
+        }
+
         const existingVote = await Vote.findOne({
             participantId,
-            $or: [{ ipAddress }, { deviceHash }]
+            $or: checkConditions
         });
 
         if (existingVote) {
@@ -32,7 +56,7 @@ router.post('/', async (req, res) => {
 
 
         // 3. Save Vote
-        const vote = new Vote({ participantId, score, ipAddress, deviceHash });
+        const vote = new Vote({ participantId, score, ipAddress, deviceHash, voterName, voterPhone });
         await vote.save();
 
         // 4. Update Participant Stats (Atomic increment)

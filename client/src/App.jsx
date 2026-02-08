@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import Voting from "./pages/Voting";
 import Admin from "./pages/Admin";
 import Display from "./pages/Display";
+import Logs from "./pages/Logs";
 import DisplayControl from "./pages/DisplayControl";
 import Leaderboard from "./pages/Leaderboard";
 import Login from "./pages/Login";
@@ -18,6 +19,11 @@ function App() {
           <Route path="/" element={<Voting />} />
           <Route path="/login" element={<Login />} />
           <Route path="/protocol-alpha" element={<SecretOnboarding />} />
+          <Route path="/logs" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <Logs />
+            </ProtectedRoute>
+          } />
           <Route
             path="/display"
             element={

@@ -39,6 +39,8 @@ function Login() {
             // Redirect based on role
             if (res.data.user.role === 'admin') {
                 navigate('/admin');
+            } else if (res.data.user.role === 'display') {
+                navigate('/display');
             } else {
                 navigate('/display-control');
             }
@@ -133,8 +135,8 @@ function Login() {
                             type="submit"
                             disabled={loading}
                             className={`w-full py-4 font-orbitron font-bold text-sm tracking-widest border-2 transition-all ${loading
-                                    ? 'bg-gray-700 border-gray-700 text-gray-500 cursor-not-allowed'
-                                    : 'bg-spy-green text-black border-spy-green hover:bg-transparent hover:text-spy-green'
+                                ? 'bg-gray-700 border-gray-700 text-gray-500 cursor-not-allowed'
+                                : 'bg-spy-green text-black border-spy-green hover:bg-transparent hover:text-spy-green'
                                 }`}
                         >
                             {loading ? (
