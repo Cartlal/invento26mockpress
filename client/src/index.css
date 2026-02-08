@@ -23,16 +23,16 @@ body {
   font-family: 'Share Tech Mono', monospace;
 }
 
-/* Spy Grid Background */
+/* Spy Grid Background - Simplified for performance */
 .spy-grid-bg {
   background-color: #000;
   background-image:
-    linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+    linear-gradient(rgba(0, 255, 65, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-/* Scanline Effect */
+/* Scanline Effect - Optimized */
 .scanlines {
   position: relative;
   overflow: hidden;
@@ -45,12 +45,11 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom,
-      transparent 50%,
-      rgba(0, 0, 0, 0.3) 50%);
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
   background-size: 100% 4px;
   pointer-events: none;
   z-index: 1;
+  opacity: 0.5;
 }
 
 .scanlines::after {

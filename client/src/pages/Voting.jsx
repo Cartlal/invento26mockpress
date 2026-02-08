@@ -58,7 +58,8 @@ function Voting() {
             const res = await axios.get(`${API_URL}/admin/state`);
             setEventState(res.data);
             if (res.data.currentParticipantId) {
-                fetchParticipant(res.data.currentParticipantId);
+                // Now populated directly
+                setParticipant(res.data.currentParticipantId);
             }
         } catch (err) {
             console.error("Error fetching state:", err);
@@ -70,8 +71,8 @@ function Voting() {
 
         socket.on("stateUpdate", (newState) => {
             setEventState(newState);
-            if (newState.currentParticipantId && newState.currentParticipantId !== participant?._id) {
-                fetchParticipant(newState.currentParticipantId);
+            if (newState.currentParticipantId && newState.currentParticipantId._id !== participant?._id) {
+                setParticipant(newState.currentParticipantId);
                 setHasVoted(false);
                 setSelectedScore(5);
             }
@@ -310,24 +311,31 @@ function Voting() {
                 {/* Target Dossier */}
                 {participant && (
                     <div className="bg-black/80 border-2 border-spy-green hud-corners p-6 mb-6 backdrop-blur-sm">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Target className="w-5 h-5 text-spy-green" />
-                            <span className="font-mono-tech text-xs text-spy-green tracking-wider">ACTIVE TARGET</span>
-                        </div>
-
-                        <div className="mb-4">
-                            <h2 className="font-orbitron text-2xl font-black text-white mb-1 tracking-wide uppercase">
-                                {participant.name}
-                            </h2>
-                            <div className="flex items-center gap-3 text-xs font-mono-tech text-gray-400">
-                                <span>ID: {participant.code || `P-${participant.orderNumber}`}</span>
-                                <span className="text-spy-green">• SEQUENCE: #{participant.orderNumber}</span>
+                        <div className="flex items-center gap-4">
+                            {/* Participant Photo in Dossier */}
+                            <div className="w-20 h-20 border border-spy-green bg-black flex-shrink-0 overflow-hidden">
+                                {participant.photoUrl ? (
+                                    <img src={participant.photoUrl} alt={participant.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <Target className="w-8 h-8 text-spy-green opacity-30" />
+                                    </div>
+                                )}
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-2 bg-spy-green/10 border border-spy-green/30 px-3 py-2">
-                            <div className="w-2 h-2 bg-spy-green rounded-full animate-pulse"></div>
-                            <span className="font-mono-tech text-xs text-spy-green tracking-wider">AWAITING ASSESSMENT</span>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Target className="w-4 h-4 text-spy-green" />
+                                    <span className="font-mono-tech text-[10px] text-spy-green tracking-widest uppercase">ACTIVE_TARGET_IDENTIFIED</span>
+                                </div>
+                                <h2 className="font-orbitron text-xl font-black text-white mb-1 tracking-wide uppercase">
+                                    {participant.name}
+                                </h2>
+                                <div className="flex items-center gap-3 text-[10px] font-mono-tech text-gray-500">
+                                    <span>ID: {participant.code || `P-${participant.orderNumber}`}</span>
+                                    <span className="text-spy-green">• SEQ: #{participant.orderNumber}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -335,7 +343,6 @@ function Voting() {
                 {/* Voting Interface */}
                 {hasVoted ? (
                     <div className="bg-black/80 border-2 border-spy-green hud-corners p-8 text-center backdrop-blur-sm">
-                        <img src={getSpyImage(selectedScore)} alt="Spy" className="w-32 h-32 mx-auto mb-4" />
                         <CheckCircle className="w-16 h-16 text-spy-green mx-auto mb-4 animate-pulse" />
                         <h3 className="font-orbitron text-xl font-bold text-spy-green mb-2 neon-green">
                             INTEL TRANSMITTED
@@ -354,13 +361,13 @@ function Voting() {
                             <div className="bg-black/80 border-2 border-spy-green/50 p-6 mb-6 text-center backdrop-blur-sm">
                                 <div className="flex items-center justify-center gap-3 mb-3">
                                     <Gauge className="w-6 h-6 text-spy-green" />
-                                    <span className="font-mono-tech text-xs text-gray-400 tracking-wider">RATING SELECTOR</span>
+                                    <span className="font-mono-tech text-xs text-gray-400 tracking-wider uppercase">ASSESSMENT_INPUT</span>
                                 </div>
-                                <img src={getSpyImage(selectedScore)} alt="Spy" className="w-24 h-24 mx-auto mb-3" />
-                                <div className={`font-orbitron text-5xl font-black mb-2 ${getScoreColor(selectedScore)}`}>
+
+                                <div className={`font-orbitron text-6xl font-black mb-1 ${getScoreColor(selectedScore)}`}>
                                     {selectedScore}
                                 </div>
-                                <div className="font-mono-tech text-sm text-gray-400 tracking-wider">
+                                <div className="font-mono-tech text-sm text-gray-400 tracking-widest font-bold">
                                     {getScoreLabel(selectedScore)}
                                 </div>
                             </div>
@@ -385,13 +392,12 @@ function Voting() {
                                     <img
                                         src="/assets/pin.png"
                                         alt="Pin"
-                                        className="absolute w-10 h-10 pointer-events-none transition-all duration-75 ease-out"
+                                        className="absolute w-8 h-8 pointer-events-none z-10"
                                         style={{
-                                            left: `calc(${((selectedScore - 1) / 9) * 100}%)`,
-                                            top: '-4px',
-                                            transform: 'translateX(-50%)',
-                                            filter: 'drop-shadow(0 0 15px rgba(0, 255, 65, 0.8))',
-                                            zIndex: 10
+                                            left: `${((selectedScore - 1) / 9) * 100}%`,
+                                            top: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            filter: 'drop-shadow(0 0 10px rgba(0, 255, 65, 0.4))'
                                         }}
                                     />
 

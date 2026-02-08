@@ -21,7 +21,8 @@ import {
     Trophy,
     LogOut,
     Lock,
-    Unlock
+    Unlock,
+    PlusCircle
 } from 'lucide-react';
 
 import { apiUrl as API_URL } from "../config";
@@ -31,12 +32,13 @@ function DisplayControl() {
     const [participants, setParticipants] = useState([]);
     const [eventState, setEventState] = useState({ isVotingOpen: false, currentParticipantId: null });
     const [liveStats, setLiveStats] = useState({});
-    const [previewParticipant, setPreviewParticipant] = useState(null);
     const [draggedIndex, setDraggedIndex] = useState(null);
     const [editingParticipant, setEditingParticipant] = useState(null);
     const [editForm, setEditForm] = useState({ name: '', code: '', photoUrl: '' });
     const [imagePreview, setImagePreview] = useState(null);
     const [voteLocked, setVoteLocked] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [addForm, setAddForm] = useState({ name: '', code: '', photoUrl: '' });
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
@@ -61,25 +63,27 @@ function DisplayControl() {
         try {
             const res = await axios.get(`${API_URL}/admin/state`);
             setEventState(res.data);
-            if (res.data.currentParticipantId) {
-                const current = participants.find(p => p._id === res.data.currentParticipantId);
-                setPreviewParticipant(current);
-            }
         } catch (e) {
             console.error(e);
         }
     };
 
+    // Derived State: Priority to populated data from server, fallback to local lookup
+    const currentParticipant = (eventState.currentParticipantId && typeof eventState.currentParticipantId === 'object')
+        ? eventState.currentParticipantId
+        : participants.find(p => p._id === eventState.currentParticipantId);
+
+    const currentParticipantId = currentParticipant?._id || eventState.currentParticipantId;
+
     useEffect(() => {
         fetchParticipants();
         fetchState();
 
+        // Join admin room to see live vote status
+        socket.emit('joinRoom', 'admin');
+
         socket.on("stateUpdate", (newState) => {
             setEventState(newState);
-            if (newState.currentParticipantId) {
-                const current = participants.find(p => p._id === newState.currentParticipantId);
-                setPreviewParticipant(current);
-            }
         });
 
         socket.on("newVote", ({ participantId, score }) => {
@@ -96,7 +100,7 @@ function DisplayControl() {
             socket.off("stateUpdate");
             socket.off("newVote");
         };
-    }, [participants]);
+    }, []); // Empty dependency array prevents infinite loops
 
     const updateState = async (updates) => {
         try {
@@ -110,49 +114,40 @@ function DisplayControl() {
     };
 
     const setLive = (participantId) => {
-        updateState({ currentParticipantId: participantId, isVotingOpen: false });
+        updateState({
+            currentParticipantId: participantId,
+            isVotingOpen: false,
+            displayMode: 'waiting'
+        });
+        setVoteLocked(false);
     };
 
     const goToNext = () => {
-        const currentIndex = participants.findIndex(p => p._id === eventState.currentParticipantId);
+        const currentIndex = participants.findIndex(p => p._id === currentParticipantId);
         if (currentIndex < participants.length - 1) {
             setLive(participants[currentIndex + 1]._id);
         }
     };
 
     const goToPrevious = () => {
-        const currentIndex = participants.findIndex(p => p._id === eventState.currentParticipantId);
+        const currentIndex = participants.findIndex(p => p._id === currentParticipantId);
         if (currentIndex > 0) {
             setLive(participants[currentIndex - 1]._id);
         }
     };
 
     const handleLockVotes = async () => {
-        if (!eventState.currentParticipantId) {
+        if (!currentParticipantId) {
             toast.error("No participant selected");
             return;
         }
 
         try {
-            // Get all votes for current participant
-            const votesRes = await axios.get(`${API_URL}/admin/votes/${eventState.currentParticipantId}`);
-            const votes = votesRes.data;
-            const totalVotes = votes.length;
-            const sum = votes.reduce((acc, v) => acc + v.score, 0);
-            const finalScore = totalVotes > 0 ? (sum / totalVotes).toFixed(2) : 0;
-
-            // Update participant with final score
-            await axios.put(`${API_URL}/admin/participant/${eventState.currentParticipantId}`, {
-                finalScore: parseFloat(finalScore),
-                totalVotes: totalVotes,
-                status: 'completed'
-            });
-
-            // Close voting
-            await updateState({ isVotingOpen: false });
+            // Simply closing voting now triggers backend auto-calculation
+            await updateState({ isVotingOpen: false, displayMode: 'result' });
             setVoteLocked(true);
 
-            toast.success(`Votes Locked! Final Score: ${finalScore}`, {
+            toast.success(`Votes Locked! Transitioning to Results...`, {
                 duration: 5000,
                 style: { background: '#00ff41', color: '#000', fontFamily: 'monospace', fontWeight: 'bold' }
             });
@@ -161,19 +156,27 @@ function DisplayControl() {
         }
     };
 
-    const handleUnlockVotes = () => {
-        setVoteLocked(false);
-        toast.success("Votes Unlocked", {
-            style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
-        });
+    const handleUnlockVotes = async () => {
+        try {
+            await updateState({ isVotingOpen: true, displayMode: 'voting_open' });
+            setVoteLocked(false);
+            toast.success("Votes Unlocked", {
+                style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
+            });
+        } catch (err) {
+            toast.error("Failed to unlock votes");
+        }
+    };
+
+    const setDisplayMode = (mode) => {
+        updateState({ displayMode: mode });
     };
 
     const handleShowWaiting = async () => {
         if (!window.confirm("Show Waiting Screen? This will clear the current participant from display.")) return;
         try {
-            await updateState({ currentParticipantId: null, isVotingOpen: false });
+            await updateState({ currentParticipantId: null, isVotingOpen: false, displayMode: 'waiting' });
             setVoteLocked(false);
-            setPreviewParticipant(null);
             toast.success("Waiting Screen Active", {
                 style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
             });
@@ -182,10 +185,36 @@ function DisplayControl() {
         }
     };
 
+    const handleCreateParticipant = async (e) => {
+        e.preventDefault();
+        if (!addForm.name.trim()) {
+            toast.error("Name is required");
+            return;
+        }
+
+        try {
+            await axios.post(`${API_URL}/admin/participant`, {
+                name: addForm.name,
+                orderNumber: participants.length + 1,
+                code: addForm.code,
+                photoUrl: addForm.photoUrl
+            });
+            fetchParticipants();
+            toast.success("Participant Added", {
+                style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
+            });
+            setShowAddModal(false);
+            setAddForm({ name: '', code: '', photoUrl: '' });
+            setImagePreview(null);
+        } catch (e) {
+            toast.error("Failed to add participant");
+        }
+    };
+
     const handleDelete = async (id) => {
         if (!window.confirm("Delete this participant? This action cannot be undone.")) return;
         try {
-            await axios.delete(`${API_URL} /admin/participant / ${id} `);
+            await axios.delete(`${API_URL}/admin/participant/${id}`);
             fetchParticipants();
             toast.success("Participant Deleted", {
                 style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
@@ -205,7 +234,7 @@ function DisplayControl() {
         setImagePreview(participant.photoUrl || null);
     };
 
-    const handleImageChange = (e) => {
+    const handleImageChange = (e, isEdit = true) => {
         const file = e.target.files[0];
         if (file) {
             if (file.size > 10 * 1024 * 1024) {
@@ -215,7 +244,11 @@ function DisplayControl() {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
-                setEditForm({ ...editForm, photoUrl: reader.result });
+                if (isEdit) {
+                    setEditForm({ ...editForm, photoUrl: reader.result });
+                } else {
+                    setAddForm({ ...addForm, photoUrl: reader.result });
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -223,7 +256,7 @@ function DisplayControl() {
 
     const saveEdit = async () => {
         try {
-            await axios.put(`${API_URL} /admin/participant / ${editingParticipant} `, editForm);
+            await axios.put(`${API_URL}/admin/participant/${editingParticipant}`, editForm);
             fetchParticipants();
             setEditingParticipant(null);
             toast.success("Participant Updated", {
@@ -263,7 +296,7 @@ function DisplayControl() {
             // Save new order to backend
             await Promise.all(
                 participants.map(p =>
-                    axios.put(`${API_URL} /admin/participant / ${p._id} `, {
+                    axios.put(`${API_URL}/admin/participant/${p._id}`, {
                         orderNumber: p.orderNumber
                     })
                 )
@@ -289,7 +322,7 @@ function DisplayControl() {
         return { count: stats.count, avg };
     };
 
-    const currentIndex = participants.findIndex(p => p._id === eventState.currentParticipantId);
+    const currentIndex = participants.findIndex(p => p._id === currentParticipantId);
 
     return (
         <div className="min-h-screen bg-black spy-grid-bg scanlines p-4">
@@ -362,33 +395,42 @@ function DisplayControl() {
                         </div>
 
                         {/* Preview Screen */}
-                        <div className="bg-black border-2 border-spy-green/30 aspect-video flex items-center justify-center relative overflow-hidden">
-                            {previewParticipant ? (
-                                <div className="text-center p-8">
-                                    {previewParticipant.photoUrl && (
+                        <div className="bg-black border-2 border-spy-green/30 aspect-video flex items-center justify-center relative overflow-hidden p-6">
+                            <div className="absolute inset-0 spy-grid-bg opacity-10"></div>
+                            {currentParticipant ? (
+                                <div className="flex items-center gap-8 w-full">
+                                    {currentParticipant.photoUrl ? (
                                         <img
-                                            src={previewParticipant.photoUrl}
-                                            alt={previewParticipant.name}
-                                            className="w-32 h-32 object-cover border-2 border-spy-green/50 mx-auto mb-4"
+                                            src={currentParticipant.photoUrl}
+                                            alt={currentParticipant.name}
+                                            className="w-32 h-32 object-cover border-2 border-spy-green/50 flex-shrink-0"
                                         />
-                                    )}
-                                    <h3 className="font-orbitron text-4xl font-black text-white mb-2 uppercase">
-                                        {previewParticipant.name}
-                                    </h3>
-                                    <p className="font-mono-tech text-sm text-gray-400">
-                                        {previewParticipant.code || `P - ${previewParticipant.orderNumber} `}
-                                    </p>
-                                    {eventState.isVotingOpen && (
-                                        <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-spy-green/20 border border-spy-green">
-                                            <div className="w-2 h-2 bg-spy-green rounded-full animate-pulse"></div>
-                                            <span className="font-mono-tech text-xs text-spy-green">VOTING ACTIVE</span>
+                                    ) : (
+                                        <div className="w-32 h-32 border-2 border-spy-green/50 flex items-center justify-center bg-black flex-shrink-0">
+                                            <Users className="w-12 h-12 text-gray-800" />
                                         </div>
                                     )}
+                                    <div className="text-left flex-1">
+                                        <h3 className="font-orbitron text-2xl font-black text-white mb-2 uppercase tracking-tight">
+                                            {currentParticipant.name}
+                                        </h3>
+                                        <div className="font-mono-tech text-[10px] text-gray-400 flex gap-4 uppercase">
+                                            <span>ID: {currentParticipant.code || `P-${currentParticipant.orderNumber}`}</span>
+                                            <span className="text-spy-green">|</span>
+                                            <span>SEQ: #{currentParticipant.orderNumber}</span>
+                                        </div>
+                                        {eventState.isVotingOpen && (
+                                            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-spy-green/20 border border-spy-green">
+                                                <div className="w-2 h-2 bg-spy-green rounded-full animate-pulse"></div>
+                                                <span className="font-mono-tech text-[10px] text-spy-green uppercase font-bold">VOTING_ACTIVE</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="text-center">
                                     <Eye className="w-16 h-16 text-gray-700 mx-auto mb-4" />
-                                    <p className="font-mono-tech text-gray-600 text-sm">
+                                    <p className="font-mono-tech text-gray-600 text-sm tracking-widest uppercase">
                                         NO PARTICIPANT ON DISPLAY
                                     </p>
                                 </div>
@@ -421,12 +463,18 @@ function DisplayControl() {
 
                             {/* Voting Control */}
                             <button
-                                onClick={() => updateState({ isVotingOpen: !eventState.isVotingOpen })}
-                                disabled={!previewParticipant}
+                                onClick={() => {
+                                    const newState = !eventState.isVotingOpen;
+                                    updateState({
+                                        isVotingOpen: newState,
+                                        displayMode: newState ? 'voting_open' : eventState.displayMode
+                                    });
+                                }}
+                                disabled={!currentParticipant}
                                 className={`py-3 font-orbitron font-bold text-sm tracking-widest flex items-center justify-center gap-2 border-2 transition-all ${eventState.isVotingOpen
                                     ? 'bg-spy-red text-white border-spy-red hover:bg-transparent'
                                     : 'bg-spy-green text-black border-spy-green hover:bg-transparent hover:text-spy-green'
-                                    } ${!previewParticipant ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    } ${!currentParticipant ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 {eventState.isVotingOpen ? (
                                     <>
@@ -442,7 +490,7 @@ function DisplayControl() {
                             </button>
                         </div>
                         {/* Lock/Unlock and Display Buttons */}
-                        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
                             {/* Lock/Unlock Votes */}
                             {voteLocked ? (
                                 <button
@@ -455,8 +503,8 @@ function DisplayControl() {
                             ) : (
                                 <button
                                     onClick={handleLockVotes}
-                                    disabled={!previewParticipant}
-                                    className={`py-3 font-orbitron font-bold text-sm tracking-widest flex items-center justify-center gap-2 border-2 transition-all ${!previewParticipant
+                                    disabled={!currentParticipant}
+                                    className={`py-3 font-orbitron font-bold text-sm tracking-widest flex items-center justify-center gap-2 border-2 transition-all ${!currentParticipant
                                         ? 'bg-gray-700 border-gray-700 text-gray-500 cursor-not-allowed'
                                         : 'bg-spy-yellow text-black border-spy-yellow hover:bg-transparent hover:text-spy-yellow'
                                         }`}
@@ -466,23 +514,32 @@ function DisplayControl() {
                                 </button>
                             )}
 
-                            {/* Show Waiting Screen */}
-                            <button
-                                onClick={handleShowWaiting}
-                                className="py-3 font-orbitron font-bold text-sm tracking-widest flex items-center justify-center gap-2 border-2 bg-gray-800 text-gray-400 border-gray-600 hover:bg-gray-700 hover:text-white transition-all"
-                            >
-                                <StopCircle size={18} />
-                                SHOW WAITING
-                            </button>
+                            {/* Show Waiting Screen - Moved/Replaced by specialized control area if needed, but removed per request */}
+                        </div>
 
-                            {/* Show Display Page */}
-                            <button
-                                onClick={() => window.open('/display', 'display-window', 'width=1920,height=1080')}
-                                className="py-3 font-orbitron font-bold text-sm tracking-widest flex items-center justify-center gap-2 border-2 bg-spy-blue text-black border-spy-blue hover:bg-transparent hover:text-spy-blue transition-all"
-                            >
-                                <Monitor size={18} />
-                                SHOW DISPLAY
-                            </button>
+                        {/* Display Mode Controls */}
+                        <div className="mt-6 bg-black/40 p-4 border border-spy-green/10">
+                            <span className="font-mono-tech text-[10px] text-gray-500 tracking-widest block mb-3 uppercase">PROJECTOR VIEW MODE</span>
+                            <div className="grid grid-cols-3 gap-2">
+                                <button
+                                    onClick={() => setDisplayMode('waiting')}
+                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'waiting' ? 'bg-spy-green text-black border-spy-green' : 'text-spy-green border-spy-green/30 hover:bg-spy-green/10'}`}
+                                >
+                                    STANDBY
+                                </button>
+                                <button
+                                    onClick={() => setDisplayMode('voting_open')}
+                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'voting_open' ? 'bg-spy-blue text-black border-spy-blue' : 'text-spy-blue border-spy-blue/30 hover:bg-spy-blue/10'}`}
+                                >
+                                    VOTING
+                                </button>
+                                <button
+                                    onClick={() => setDisplayMode('result')}
+                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'result' ? 'bg-spy-yellow text-black border-spy-yellow' : 'text-spy-yellow border-spy-yellow/30 hover:bg-spy-yellow/10'}`}
+                                >
+                                    RESULT
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -490,11 +547,23 @@ function DisplayControl() {
                 {/* Right - Participant Queue */}
                 <div>
                     <div className="bg-dark-panel border border-spy-green/30 p-6">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Users className="w-5 h-5 text-spy-green" />
-                            <h2 className="font-orbitron text-lg font-bold text-white tracking-wider">
-                                PARTICIPANT QUEUE
-                            </h2>
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <Users className="w-5 h-5 text-spy-green" />
+                                <h2 className="font-orbitron text-lg font-bold text-white tracking-wider">
+                                    PARTICIPANT QUEUE
+                                </h2>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setShowAddModal(true);
+                                    setImagePreview(null);
+                                }}
+                                className="flex items-center gap-1 px-3 py-1 bg-spy-green text-black font-orbitron font-bold text-[10px] tracking-wider border border-spy-green hover:bg-transparent hover:text-spy-green transition-all"
+                            >
+                                <PlusCircle size={14} />
+                                ADD AGENT
+                            </button>
                         </div>
                         <p className="font-mono-tech text-xs text-gray-500 mb-4">
                             Drag to reorder • Click to set live
@@ -502,7 +571,7 @@ function DisplayControl() {
 
                         <div className="space-y-2 max-h-[600px] overflow-y-auto">
                             {participants.map((p, index) => {
-                                const isLive = eventState.currentParticipantId === p._id;
+                                const isLive = currentParticipantId === p._id;
                                 const stats = getStats(p._id);
                                 const isEditing = editingParticipant === p._id;
 
@@ -650,6 +719,105 @@ function DisplayControl() {
                     </div>
                 </div>
             </div>
+            {/* Add Participant Modal */}
+            {showAddModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+                    <div className="bg-dark-panel border-2 border-spy-green hud-corners w-full max-w-lg p-8 animate-in fade-in zoom-in duration-300">
+                        <div className="flex items-center gap-3 mb-8">
+                            <PlusCircle className="text-spy-green w-8 h-8" />
+                            <h2 className="font-orbitron text-2xl font-black text-white tracking-widest uppercase">
+                                ADD NEW AGENT
+                            </h2>
+                        </div>
+
+                        <form onSubmit={handleCreateParticipant} className="space-y-6">
+                            {/* Photo Upload Field */}
+                            <div>
+                                <label className="block font-mono-tech text-xs text-spy-green tracking-widest mb-2 uppercase">
+                                    AGENT PROXIED PHOTO
+                                </label>
+                                <div className="flex gap-4 items-center">
+                                    <div className="w-24 h-24 border-2 border-spy-green/30 bg-black flex items-center justify-center overflow-hidden">
+                                        {imagePreview ? (
+                                            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <Users className="w-12 h-12 text-gray-800" />
+                                        )}
+                                    </div>
+                                    <div className="flex-1">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleImageChange(e, false)}
+                                            className="hidden"
+                                            id="add-image-upload"
+                                        />
+                                        <label
+                                            htmlFor="add-image-upload"
+                                            className="inline-block px-4 py-2 bg-spy-green/20 border border-spy-green/50 text-spy-green font-mono-tech text-xs tracking-wider cursor-pointer hover:bg-spy-green/30 transition-all font-bold"
+                                        >
+                                            UPLOAD DOSSIER
+                                        </label>
+                                        <p className="font-mono-tech text-[10px] text-gray-600 mt-2">
+                                            SECURE UPLOAD • MAX 10MB
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Name Field */}
+                            <div>
+                                <label className="block font-mono-tech text-xs text-spy-green tracking-widest mb-2">
+                                    TARGET IDENTITY (NAME)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={addForm.name}
+                                    onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                                    className="w-full bg-black border-2 border-spy-green/30 focus:border-spy-green px-4 py-3 font-rajdhani text-white text-lg outline-none transition-all"
+                                    placeholder="Enter full name..."
+                                    required
+                                />
+                            </div>
+
+                            {/* Code Field */}
+                            <div>
+                                <label className="block font-mono-tech text-xs text-spy-green tracking-widest mb-2">
+                                    PROTOCOL CODE (OPTIONAL)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={addForm.code}
+                                    onChange={(e) => setAddForm({ ...addForm, code: e.target.value })}
+                                    className="w-full bg-black border-2 border-spy-green/30 focus:border-spy-green px-4 py-3 font-rajdhani text-white text-lg outline-none transition-all"
+                                    placeholder="e.g., MP-ALPHA-01"
+                                />
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex gap-4 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowAddModal(false);
+                                        setAddForm({ name: '', code: '', photoUrl: '' });
+                                        setImagePreview(null);
+                                    }}
+                                    className="flex-1 py-3 font-orbitron font-bold text-sm tracking-widest border-2 border-spy-red text-spy-red hover:bg-spy-red hover:text-black transition-all"
+                                >
+                                    ABORT
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-1 py-3 font-orbitron font-bold text-sm tracking-widest border-2 border-spy-green bg-spy-green text-black hover:bg-transparent hover:text-spy-green transition-all"
+                                >
+                                    INITIALIZE
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

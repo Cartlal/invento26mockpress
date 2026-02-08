@@ -68,6 +68,9 @@ function Admin() {
         fetchParticipants();
         fetchState();
 
+        // Join high-traffic room for real-time monitor
+        socket.emit('joinRoom', 'admin');
+
         socket.on("stateUpdate", (newState) => setEventState(newState));
         socket.on("newVote", ({ participantId, score }) => {
             setLiveVotes(prev => ({

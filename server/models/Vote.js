@@ -10,7 +10,9 @@ const VoteSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
 });
 
-// Prevent duplicate votes per participant/device combo if needed
-// VoteSchema.index({ participantId: 1, deviceHash: 1 }, { unique: true });
+// Indexing for performance and double-vote prevention
+VoteSchema.index({ participantId: 1, deviceHash: 1 });
+VoteSchema.index({ participantId: 1, voterName: 1 });
+VoteSchema.index({ participantId: 1, ipAddress: 1 });
 
 module.exports = mongoose.model('Vote', VoteSchema);

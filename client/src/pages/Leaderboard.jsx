@@ -11,27 +11,13 @@ function Leaderboard() {
 
     const fetchParticipants = async () => {
         try {
-            const res = await axios.get(`${API_URL}/admin/participants`);
-            // Calculate final scores and sort by score
-            const withScores = await Promise.all(
-                res.data.map(async (p) => {
-                    const votesRes = await axios.get(`${API_URL}/admin/votes/${p._id}`);
-                    const votes = votesRes.data;
-                    const totalVotes = votes.length;
-                    const sum = votes.reduce((acc, v) => acc + v.score, 0);
-                    const avgScore = totalVotes > 0 ? (sum / totalVotes).toFixed(2) : 0;
-
-                    return {
-                        ...p,
-                        totalVotes,
-                        avgScore: parseFloat(avgScore)
-                    };
-                })
-            );
-
-            // Sort by average score descending
-            const sorted = withScores.sort((a, b) => b.avgScore - a.avgScore);
-            setParticipants(sorted);
+            const res = await axios.get(`${API_URL}/vote/leaderboard`);
+            // Format scores to 2 decimal places as needed by the UI
+            const formatted = res.data.map(p => ({
+                ...p,
+                avgScore: parseFloat(p.avgScore.toFixed(2))
+            }));
+            setParticipants(formatted);
             setLoading(false);
         } catch (e) {
             console.error(e);

@@ -44,17 +44,25 @@ app.use('/api/auth', authRoutes);
 
 // Socket.IO
 io.on('connection', (socket) => {
-    // ... existing socket logic ...
     console.log('User connected:', socket.id);
 
-    // Emit total connected clients
-    const count = io.engine.clientsCount;
-    io.emit('userCount', count);
+    // Join specific rooms based on identity (sent via handshake or event)
+    socket.on('joinRoom', (room) => {
+        socket.join(room);
+        console.log(`Socket ${socket.id} joined room: ${room}`);
+
+        // If joined admin room, send initial user count
+        if (room === 'admin') {
+            const count = io.engine.clientsCount;
+            io.to('admin').emit('userCount', count);
+        }
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
+        // Only broadcast count update to admin room to save bandwidth
         const count = io.engine.clientsCount;
-        io.emit('userCount', count);
+        io.to('admin').emit('userCount', count);
     });
 });
 

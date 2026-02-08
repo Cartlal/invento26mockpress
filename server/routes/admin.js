@@ -196,7 +196,7 @@ router.get('/voter-history/:phone', async (req, res) => {
 // Get current event state
 router.get('/state', async (req, res) => {
     try {
-        let state = await EventState.findOne();
+        let state = await EventState.findOne().populate('currentParticipantId');
         if (!state) {
             state = new EventState();
             await state.save();
@@ -219,7 +219,24 @@ router.post('/state', async (req, res) => {
         if (isVotingOpen !== undefined) state.isVotingOpen = isVotingOpen;
         if (displayMode !== undefined) state.displayMode = displayMode;
 
+        // Automated Final Score Calculation when voting closes
+        if (isVotingOpen === false && state.currentParticipantId) {
+            const votes = await Vote.find({ participantId: state.currentParticipantId });
+            const totalVotes = votes.length;
+            const sum = votes.reduce((acc, v) => acc + v.score, 0);
+            const avgScore = totalVotes > 0 ? (sum / totalVotes) : 0;
+
+            await Participant.findByIdAndUpdate(state.currentParticipantId, {
+                finalScore: avgScore,
+                totalVotes: totalVotes,
+                status: 'completed'
+            });
+
+            console.log(`Locked score for participant ${state.currentParticipantId}: ${avgScore} (${totalVotes} votes)`);
+        }
+
         await state.save();
+        const populatedState = await EventState.findOne().populate('currentParticipantId');
 
         await AuditLog.create({
             action: 'STATE_UPDATE',
@@ -227,11 +244,11 @@ router.post('/state', async (req, res) => {
             ip: req.ip
         });
 
-        // Emit socket event for real-time updates
+        // Emit socket event for real-time updates (includes populated participant data)
         const io = req.app.get('io');
-        io.emit('stateUpdate', state);
+        io.emit('stateUpdate', populatedState);
 
-        res.json(state);
+        res.json(populatedState);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
