@@ -239,36 +239,36 @@ function Voting() {
 
     // VOTING ACTIVE STATE
     return (
-        <div className="h-screen bg-black flex flex-col p-4 relative overflow-hidden">
+        <div className="h-screen bg-black flex flex-col p-6 items-center relative overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
 
             {/* Content Wrapper */}
-            <div className="flex flex-col h-full justify-between z-10 w-full max-w-md mx-auto">
+            <div className="relative z-10 w-full max-w-md h-full flex flex-col justify-center gap-6 py-4">
                 {/* Header: Logo & Status */}
-                <div className="text-center">
-                    <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-20 h-20 mx-auto mb-2" />
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-spy-green/10 border border-spy-green/50 rounded-full">
-                        <div className="w-1.5 h-1.5 bg-spy-green rounded-full pulse-glow"></div>
-                        <span className="font-mono-tech text-[10px] text-spy-green tracking-[0.2em] uppercase font-bold">VOTING ACTIVE</span>
+                <div className="text-center space-y-3">
+                    <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-28 h-28 mx-auto" />
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-spy-green/10 border border-spy-green/50 rounded-full">
+                        <div className="w-2 h-2 bg-spy-green rounded-full pulse-glow"></div>
+                        <span className="font-mono-tech text-xs text-spy-green tracking-[0.2em] uppercase font-bold">VOTING ACTIVE</span>
                     </div>
                 </div>
 
                 {/* Participant Profile */}
                 {participant && (
                     <div className="text-center">
-                        <div className="relative inline-block mb-2">
-                            <div className="relative w-28 h-28 mx-auto border-2 border-spy-green p-1 group overflow-hidden">
+                        <div className="relative inline-block mb-3">
+                            <div className="relative w-36 h-36 mx-auto border-2 border-spy-green p-1 group overflow-hidden shadow-[0_0_30px_rgba(0,255,65,0.15)]">
                                 {participant.photoUrl ? (
                                     <img src={participant.photoUrl} alt={participant.name} className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center bg-dark-panel">
-                                        <Target className="w-8 h-8 text-spy-green opacity-30" />
+                                        <Target className="w-10 h-10 text-spy-green opacity-30" />
                                     </div>
                                 )}
                             </div>
                         </div>
-                        <h2 className="font-orbitron text-xl font-black text-white tracking-wider uppercase">
+                        <h2 className="font-orbitron text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
                             {participant.name}
                         </h2>
                     </div>
@@ -276,43 +276,43 @@ function Voting() {
 
                 {/* Voting Interface */}
                 {hasVoted ? (
-                    <div className="bg-black/80 border-2 border-spy-green hud-corners p-6 text-center backdrop-blur-sm my-auto">
-                        <CheckCircle className="w-12 h-12 text-spy-green mx-auto mb-3 animate-pulse" />
-                        <h3 className="font-orbitron text-lg font-bold text-spy-green mb-1 neon-green uppercase">
+                    <div className="bg-black/80 border-2 border-spy-green hud-corners p-8 text-center backdrop-blur-sm animate-in zoom-in-95 duration-500">
+                        <CheckCircle className="w-16 h-16 text-spy-green mx-auto mb-4 animate-pulse" />
+                        <h3 className="font-orbitron text-xl font-bold text-spy-green mb-2 neon-green uppercase">
                             Vote Recorded
                         </h3>
-                        <p className="font-mono-tech text-[10px] text-gray-400 tracking-wider">
+                        <p className="font-mono-tech text-xs text-gray-400 tracking-wider">
                             YOUR RESPONSE HAS BEEN SAVED
                         </p>
                     </div>
                 ) : (
-                    <div className="w-full">
+                    <div className="w-full space-y-6">
                         {/* Score Display */}
-                        <div className="bg-black/80 border border-spy-green/30 py-4 mb-4 text-center backdrop-blur-sm">
-                            <div className={`font-orbitron text-5xl font-black mb-1 ${getScoreColor(selectedScore)}`}>
+                        <div className="bg-black/80 border border-spy-green/30 py-6 text-center backdrop-blur-sm shadow-[inset_0_0_20px_rgba(0,255,65,0.05)]">
+                            <div className={`font-orbitron text-6xl font-black mb-1 ${getScoreColor(selectedScore)}`}>
                                 {selectedScore}
                             </div>
-                            <div className="font-mono-tech text-[10px] text-gray-400 tracking-widest font-bold">
+                            <div className="font-mono-tech text-[12px] text-gray-400 tracking-widest font-bold">
                                 {getScoreLabel(selectedScore)}
                             </div>
                         </div>
 
                         {/* Slider with Pin */}
-                        <div className="mb-4">
-                            {/* Slider Container */}
-                            <div className="relative py-4">
+                        <div className="px-2">
+                            <div className="relative py-6">
                                 <div
-                                    className="absolute top-1/2 -translate-y-1/2 w-full h-2 rounded-full pointer-events-none"
+                                    className="absolute top-1/2 -translate-y-1/2 w-full h-3 rounded-full pointer-events-none"
                                     style={{ background: 'linear-gradient(to right, #ff0000 0%, #ffcc00 50%, #00ff41 100%)' }}
                                 ></div>
                                 <img
                                     src="/assets/pin.png"
                                     alt="Pin"
-                                    className="absolute w-6 h-6 pointer-events-none z-10"
+                                    className="absolute w-8 h-8 pointer-events-none z-10 transition-all duration-75"
                                     style={{
                                         left: `${((selectedScore - 1) / 9) * 100}%`,
                                         top: '50%',
                                         transform: 'translate(-50%, -50%)',
+                                        filter: 'drop-shadow(0 0 10px rgba(0, 255, 65, 0.4))'
                                     }}
                                 />
                                 <input
@@ -321,10 +321,10 @@ function Voting() {
                                     max="10"
                                     value={selectedScore}
                                     onChange={(e) => setSelectedScore(parseInt(e.target.value))}
-                                    className="absolute top-1/2 -translate-y-1/2 w-full h-10 opacity-0 cursor-pointer z-20"
+                                    className="absolute top-1/2 -translate-y-1/2 w-full h-12 opacity-0 cursor-pointer z-20"
                                 />
                             </div>
-                            <div className="flex justify-between font-mono-tech text-[9px] text-gray-400">
+                            <div className="flex justify-between font-mono-tech text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                                 <span>POOR</span>
                                 <span>AVERAGE</span>
                                 <span>EXCELLENT</span>
@@ -336,15 +336,19 @@ function Voting() {
                             onClick={handleVote}
                             disabled={voteSubmitting}
                             className={`
-                                w-full py-3 mb-2 font-orbitron font-bold text-xs tracking-widest
-                                border-2 transition-all duration-200
+                                w-full py-4 font-orbitron font-bold text-sm tracking-[0.2em]
+                                border-2 transition-all duration-300 transform active:scale-95
                                 ${!voteSubmitting
-                                    ? 'bg-spy-green text-black border-spy-green'
+                                    ? 'bg-spy-green text-black border-spy-green shadow-[0_0_20px_rgba(0,255,65,0.3)]'
                                     : 'bg-dark-panel text-gray-600 border-gray-800'
                                 }
                             `}
                         >
-                            {voteSubmitting ? 'SUBMITTING...' : 'SUBMIT VOTE'}
+                            {voteSubmitting ? (
+                                <span className="animate-pulse">TRANSMITTING...</span>
+                            ) : (
+                                'SUBMIT VOTE'
+                            )}
                         </button>
                     </div>
                 )}
