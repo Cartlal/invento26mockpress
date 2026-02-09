@@ -22,7 +22,8 @@ import {
     LogOut,
     Lock,
     Unlock,
-    PlusCircle
+    PlusCircle,
+    QrCode
 } from 'lucide-react';
 
 import { apiUrl as API_URL } from "../config";
@@ -39,6 +40,7 @@ function DisplayControl() {
     const [voteLocked, setVoteLocked] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
     const [addForm, setAddForm] = useState({ name: '', code: '', photoUrl: '' });
+    const [qrPreview, setQrPreview] = useState(null);
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
@@ -78,6 +80,7 @@ function DisplayControl() {
     useEffect(() => {
         fetchParticipants();
         fetchState();
+        if (eventState.qrCodeUrl) setQrPreview(eventState.qrCodeUrl);
 
         // Join admin room to see live vote status
         socket.emit('joinRoom', 'admin');
@@ -170,6 +173,18 @@ function DisplayControl() {
 
     const setDisplayMode = (mode) => {
         updateState({ displayMode: mode });
+    };
+
+    const handleQrUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                setQrPreview(reader.result);
+                await updateState({ qrCodeUrl: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleShowWaiting = async () => {
@@ -348,6 +363,13 @@ function DisplayControl() {
                             >
                                 <Trophy size={18} />
                                 LEADERBOARD
+                            </button>
+                            <button
+                                onClick={() => window.open('/qr-code', '_blank')}
+                                className="flex items-center gap-2 px-6 py-3 bg-spy-green text-black font-orbitron font-bold text-sm tracking-wider border-2 border-spy-green hover:bg-transparent hover:text-spy-green transition-all"
+                            >
+                                <QrCode size={18} />
+                                OPEN QR
                             </button>
                             <button
                                 onClick={openFullDisplay}
@@ -539,6 +561,60 @@ function DisplayControl() {
                                 >
                                     RESULT
                                 </button>
+                                <button
+                                    onClick={() => setDisplayMode('qr')}
+                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'qr' ? 'bg-spy-blue text-black border-spy-blue' : 'text-spy-blue border-spy-blue/30 hover:bg-spy-blue/10'}`}
+                                >
+                                    QR CODE
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* QR Code Management */}
+                        <div className="mt-6 bg-dark-panel border border-spy-blue/30 p-6 hud-corners">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <QrCode className="w-5 h-5 text-spy-blue" />
+                                    <h2 className="font-orbitron text-md font-bold text-white tracking-wider">
+                                        QR CODE PROTOCOL
+                                    </h2>
+                                </div>
+                                <button
+                                    onClick={() => setDisplayMode('qr')}
+                                    className="px-4 py-1.5 bg-spy-blue/20 border border-spy-blue text-spy-blue font-mono-tech text-[10px] hover:bg-spy-blue/40 transition-all uppercase"
+                                >
+                                    Activate QR View
+                                </button>
+                            </div>
+
+                            <div className="flex gap-4 items-center">
+                                <div className="w-24 h-24 bg-white p-2 border border-spy-blue/30 flex-shrink-0">
+                                    {qrPreview ? (
+                                        <img src={qrPreview} alt="QR Preview" className="w-full h-full object-contain" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                            <QrCode className="w-8 h-8 text-gray-300" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <input
+                                        type="file"
+                                        id="qr-upload"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleQrUpload}
+                                    />
+                                    <label
+                                        htmlFor="qr-upload"
+                                        className="inline-block px-4 py-2 bg-spy-blue text-black font-orbitron font-bold text-[10px] tracking-wider border border-spy-blue hover:bg-transparent hover:text-spy-blue cursor-pointer transition-all"
+                                    >
+                                        UPLOAD NEW QR
+                                    </label>
+                                    <p className="font-mono-tech text-[9px] text-gray-400 mt-2 uppercase tracking-tighter">
+                                        Scan access code for voters
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -209,7 +209,7 @@ router.get('/state', async (req, res) => {
 // Update event state (Open/Close Voting, Change Mode, Change Active Participant)
 router.post('/state', async (req, res) => {
     try {
-        const { currentParticipantId, isVotingOpen, displayMode } = req.body;
+        const { currentParticipantId, isVotingOpen, displayMode, qrCodeUrl } = req.body;
 
         let state = await EventState.findOne();
         if (!state) state = new EventState();
@@ -217,6 +217,7 @@ router.post('/state', async (req, res) => {
         if (currentParticipantId !== undefined) state.currentParticipantId = currentParticipantId;
         if (isVotingOpen !== undefined) state.isVotingOpen = isVotingOpen;
         if (displayMode !== undefined) state.displayMode = displayMode;
+        if (qrCodeUrl !== undefined) state.qrCodeUrl = qrCodeUrl;
 
         // Automated Final Score Calculation when voting closes
         if (isVotingOpen === false && state.currentParticipantId) {

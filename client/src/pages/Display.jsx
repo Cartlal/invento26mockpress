@@ -4,6 +4,7 @@ import { socket } from "../socket";
 import StandbyView from "../components/display/StandbyView";
 import VotingView from "../components/display/VotingView";
 import ResultView from "../components/display/ResultView";
+import QRView from "../components/display/QRView";
 
 import { apiUrl as API_URL } from "../config";
 
@@ -89,6 +90,10 @@ function Display() {
         if (!eventState) return <StandbyView />;
 
         // PRIORITY 1: Explicit Manual Overrides from Display Control
+        if (eventState.displayMode === 'qr') {
+            return <QRView qrCodeUrl={eventState.qrCodeUrl} />;
+        }
+
         if (eventState.displayMode === 'waiting' || !participant) {
             return <StandbyView />;
         }
@@ -122,37 +127,41 @@ function Display() {
             <div className="scanlines"></div>
 
             {/* Header Bar */}
-            <div className="absolute top-0 left-0 right-0 bg-black/90 border-b-2 border-spy-green/30 p-4 z-50 backdrop-blur-sm">
-                <div className="flex items-center justify-between max-w-7xl mx-auto">
-                    <div className="flex items-center gap-4">
-                        <img src="/assets/Invento-logo.png" alt="INVENTO" className="h-12" />
-                        <div>
-                            <h1 className="font-orbitron text-xl font-black text-white tracking-wider">
-                                INTO THE <span className="text-spy-red">SPYVERSE</span>
-                            </h1>
-                            <span className="font-mono-tech text-xs text-gray-500 tracking-widest uppercase">Mock Press Protocol</span>
+            {eventState.displayMode !== 'qr' && (
+                <div className="absolute top-0 left-0 right-0 bg-black/90 border-b-2 border-spy-green/30 p-4 z-50 backdrop-blur-sm">
+                    <div className="flex items-center justify-between max-w-7xl mx-auto">
+                        <div className="flex items-center gap-4">
+                            <img src="/assets/Invento-logo.png" alt="INVENTO" className="h-12" />
+                            <div>
+                                <h1 className="font-orbitron text-xl font-black text-white tracking-wider">
+                                    INTO THE <span className="text-spy-red">SPYVERSE</span>
+                                </h1>
+                                <span className="font-mono-tech text-xs text-gray-500 tracking-widest uppercase">Mock Press Protocol</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="h-10" />
-                        <div className="font-mono-tech text-xs text-spy-green tracking-[0.3em] border-2 border-spy-green bg-spy-green/10 px-4 py-2 font-bold shadow-[0_0_15px_rgba(0,255,65,0.2)]">
-                            {time}
+                        <div className="flex items-center gap-4">
+                            <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="h-10" />
+                            <div className="font-mono-tech text-xs text-spy-green tracking-[0.3em] border-2 border-spy-green bg-spy-green/10 px-4 py-2 font-bold shadow-[0_0_15px_rgba(0,255,65,0.2)]">
+                                {time}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Main Content Area */}
-            <div className="h-full w-full flex items-center justify-center pt-24 pb-20 px-12 relative z-10 overflow-hidden">
+            <div className={`h-full w-full flex items-center justify-center ${eventState.displayMode !== 'qr' ? 'pt-24 pb-20' : ''} px-12 relative z-10 overflow-hidden`}>
                 {renderContent()}
             </div>
 
             {/* Footer Ticker */}
-            <div className="absolute bottom-0 left-0 right-0 bg-spy-red border-t-4 border-spy-yellow py-3 overflow-hidden z-20">
-                <div className="whitespace-nowrap animate-marquee font-mono-tech text-lg font-bold text-black tracking-wider uppercase">
-                    +++ BREAKING: MOCK PRESS CONFERENCE IN PROGRESS +++ TARGET IDENTIFIED: {participant?.name || "NONE"} +++ LIVE VOTING PROTOCOL ENGAGED +++ SYSTEM AUTHENTICATED +++ INVENTO 2026 +++ MISSION STATUS: ACTIVE +++
+            {eventState.displayMode !== 'qr' && (
+                <div className="absolute bottom-0 left-0 right-0 bg-spy-red border-t-4 border-spy-yellow py-3 overflow-hidden z-20">
+                    <div className="whitespace-nowrap animate-marquee font-mono-tech text-lg font-bold text-black tracking-wider uppercase">
+                        +++ BREAKING: MOCK PRESS CONFERENCE IN PROGRESS +++ TARGET IDENTIFIED: {participant?.name || "NONE"} +++ LIVE VOTING PROTOCOL ENGAGED +++ SYSTEM AUTHENTICATED +++ INVENTO 2026 +++ MISSION STATUS: ACTIVE +++
+                    </div>
                 </div>
-            </div>
+            )}
 
             <style>{`
                 @keyframes marquee {

@@ -9,6 +9,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Login from "./pages/Login";
 import SecretOnboarding from "./pages/SecretOnboarding";
 import ProtectedRoute from "./components/ProtectedRoute";
+import QRCodePage from "./pages/QRCodePage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             }
           />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/qr-code" element={<QRCodePage />} />
           <Route
             path="/admin"
             element={
