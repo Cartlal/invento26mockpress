@@ -5,7 +5,7 @@
     "main": "server/index.js",
     "scripts": {
         "start": "node server/index.js",
-        "build": "npm run build --prefix client",
+        "build": "npm install --prefix client --include=dev && npm run build --prefix client",
         "server": "node server/index.js",
         "client": "npm run dev --prefix client",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
