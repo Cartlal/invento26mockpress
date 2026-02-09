@@ -179,7 +179,7 @@ function Voting() {
     if (!eventState) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
+                <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
                 <div className="text-center z-10">
                     <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-32 h-32 mx-auto mb-6 animate-pulse" />
                     <div className="w-16 h-16 border-4 border-spy-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -193,7 +193,7 @@ function Voting() {
     if (!eventState.isVotingOpen) {
         return (
             <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
+                <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
                 <div className="w-full max-w-md z-10">
                     {/* Header */}
                     <div className="text-center mb-8">
@@ -241,7 +241,7 @@ function Voting() {
     return (
         <div className="min-h-screen bg-black flex flex-col p-4 relative overflow-hidden">
             {/* Background */}
-            <div className="absolute inset-0 bg-cover bg-center opacity-25" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
+            <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
 
             {/* Header */}
             <div className="w-full max-w-md mx-auto mb-6 z-10">

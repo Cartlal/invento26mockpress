@@ -73,7 +73,7 @@ function Display() {
     if (!eventState) {
         return (
             <div className="h-screen w-screen bg-black flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('/assets/Invento-bg.webp')" }}></div>
+                <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/assets/Invento-bg.webp')" }}></div>
                 <div className="text-center z-10">
                     <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-40 h-40 mx-auto mb-8 animate-pulse" />
                     <div className="w-20 h-20 border-4 border-spy-green border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
@@ -117,7 +117,7 @@ function Display() {
     return (
         <div className="h-screen w-screen bg-black overflow-hidden relative font-rajdhani">
             {/* Background Layers */}
-            <div className="absolute inset-0 bg-cover bg-center opacity-40 transition-opacity duration-1000" style={{ backgroundImage: "url('/assets/Invento-bg.webp')" }}></div>
+            <div className="absolute inset-0 bg-cover bg-center opacity-10 transition-opacity duration-1000" style={{ backgroundImage: "url('/assets/Invento-bg.webp')" }}></div>
             <div className="absolute inset-0 spy-grid-bg opacity-20"></div>
             <div className="scanlines"></div>
 
