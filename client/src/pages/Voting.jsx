@@ -239,47 +239,40 @@ function Voting() {
 
     // VOTING ACTIVE STATE
     return (
-        <div className="min-h-screen bg-black flex flex-col p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
 
-            {/* Header */}
-            <div className="w-full max-w-md mx-auto mb-6 z-10">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-spy-green rounded-full pulse-glow"></div>
-                        <span className="font-mono-tech text-xs text-spy-green tracking-wider uppercase">Voting Active</span>
-                    </div>
-                    <img src="/assets/Invento-logo.png" alt="Logo" className="h-10" />
+            {/* Header: Logo & Status */}
+            <div className="w-full max-w-md mx-auto mb-8 z-10 text-center">
+                <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-32 h-32 mx-auto mb-4" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-spy-green/10 border border-spy-green/50 rounded-full">
+                    <div className="w-2 h-2 bg-spy-green rounded-full pulse-glow"></div>
+                    <span className="font-mono-tech text-xs text-spy-green tracking-[0.2em] uppercase font-bold">VOTING ACTIVE</span>
                 </div>
-
             </div>
 
             {/* Main Content */}
             <div className="w-full max-w-md mx-auto flex-grow flex flex-col z-10">
-                {/* Target Dossier */}
+                {/* Participant Profile */}
                 {participant && (
-                    <div className="bg-black/80 border-2 border-spy-green hud-corners p-6 mb-6 backdrop-blur-sm">
-                        <div className="flex items-center gap-4">
-                            {/* Participant Photo in Dossier */}
-                            <div className="w-20 h-20 border border-spy-green bg-black flex-shrink-0 overflow-hidden">
+                    <div className="text-center mb-8">
+                        <div className="relative inline-block mb-4">
+                            <div className="absolute -inset-2 bg-spy-green/20 blur-xl rounded-full"></div>
+                            <div className="relative w-40 h-40 mx-auto border-2 border-spy-green p-1 group overflow-hidden">
                                 {participant.photoUrl ? (
                                     <img src={participant.photoUrl} alt={participant.name} className="w-full h-full object-cover" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <Target className="w-8 h-8 text-spy-green opacity-30" />
+                                    <div className="w-full h-full flex items-center justify-center bg-dark-panel">
+                                        <Target className="w-12 h-12 text-spy-green opacity-30" />
                                     </div>
                                 )}
                             </div>
-
-                            <div className="flex-1">
-
-                                <h2 className="font-orbitron text-xl font-black text-white mb-1 tracking-wide uppercase">
-                                    {participant.name}
-                                </h2>
-
-                            </div>
                         </div>
+                        <h2 className="font-orbitron text-2xl font-black text-white tracking-wider uppercase mb-1">
+                            {participant.name}
+                        </h2>
+                        <div className="w-12 h-1 bg-spy-green mx-auto opacity-50"></div>
                     </div>
                 )}
 
