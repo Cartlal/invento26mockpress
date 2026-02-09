@@ -37,9 +37,9 @@ function LiveMonitor({ participants, eventState }) {
         }
     };
 
-    const fetchVoterHistory = async (phone) => {
+    const fetchVoterHistory = async (ip) => {
         try {
-            const res = await axios.get(`${API_URL}/admin/voter-history/${phone}`);
+            const res = await axios.get(`${API_URL}/admin/voter-history/${ip}`);
             setVoterHistory(res.data);
         } catch (err) {
             console.error("Failed to fetch history", err);
@@ -162,10 +162,9 @@ function LiveMonitor({ participants, eventState }) {
                         <table className="w-full text-left font-mono-tech text-sm">
                             <thead className="text-gray-500 border-b border-gray-800">
                                 <tr>
-                                    <th className="pb-2">AGENT NAME</th>
-                                    <th className="pb-2">Secure Line</th>
-                                    <th className="pb-2 text-center">Total Intel</th>
-                                    <th className="pb-2 text-right">Last Active</th>
+                                    <th className="pb-2">IP ADDRESS (AGENT)</th>
+                                    <th className="pb-2 text-center">TOTAL VOTES</th>
+                                    <th className="pb-2 text-right">LAST ACTIVE</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800">
@@ -175,11 +174,10 @@ function LiveMonitor({ participants, eventState }) {
                                         className="hover:bg-spy-blue/10 cursor-pointer transition-colors"
                                         onClick={() => {
                                             setSelectedVoter(voter);
-                                            fetchVoterHistory(voter._id); // _id is the phone number here
+                                            fetchVoterHistory(voter._id);
                                         }}
                                     >
-                                        <td className="py-3 font-bold text-white">{voter.name}</td>
-                                        <td className="py-3 text-spy-blue">{voter._id}</td>
+                                        <td className="py-3 font-bold text-white">{voter._id}</td>
                                         <td className="py-3 text-center">{voter.totalVotes}</td>
                                         <td className="py-3 text-right text-gray-500">
                                             {new Date(voter.lastActive).toLocaleTimeString()}
@@ -199,8 +197,7 @@ function LiveMonitor({ participants, eventState }) {
                         <div className="p-6 border-b border-gray-800 flex justify-between items-start">
                             <div>
                                 <h2 className="font-orbitron text-xl font-bold text-white mb-1">AGENT DOSSIER</h2>
-                                <p className="font-mono-tech text-spy-blue">ID: {selectedVoter.name}</p>
-                                <p className="font-mono-tech text-xs text-gray-500">LINE: {selectedVoter._id}</p>
+                                <p className="font-mono-tech text-spy-blue">IP: {selectedVoter._id}</p>
                             </div>
                             <button
                                 onClick={() => setSelectedVoter(null)}

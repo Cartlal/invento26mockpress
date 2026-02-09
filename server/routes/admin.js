@@ -141,7 +141,7 @@ router.get('/stats', async (req, res) => {
     try {
         const participantCount = await Participant.countDocuments();
         const voteCount = await Vote.countDocuments();
-        const uniqueVoters = await Vote.distinct('voterPhone');
+        const uniqueVoters = await Vote.distinct('ipAddress');
 
         // Live Socket Users
         const io = req.app.get('io');
@@ -164,8 +164,7 @@ router.get('/voters', async (req, res) => {
         const voters = await Vote.aggregate([
             {
                 $group: {
-                    _id: "$voterPhone",
-                    name: { $first: "$voterName" },
+                    _id: "$ipAddress",
                     totalVotes: { $sum: 1 },
                     lastActive: { $max: "$timestamp" }
                 }
@@ -179,9 +178,9 @@ router.get('/voters', async (req, res) => {
 });
 
 // Get Specific Voter History
-router.get('/voter-history/:phone', async (req, res) => {
+router.get('/voter-history/:ip', async (req, res) => {
     try {
-        const history = await Vote.find({ voterPhone: req.params.phone })
+        const history = await Vote.find({ ipAddress: req.params.ip })
             .populate('participantId', 'name code')
             .sort({ timestamp: -1 });
         res.json(history);
