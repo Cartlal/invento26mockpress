@@ -6,6 +6,8 @@
     "scripts": {
         "start": "node server/index.js",
         "build": "npm run build --prefix client",
+        "server": "node server/index.js",
+        "client": "npm run dev --prefix client",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
         "postinstall": "npm install --prefix server && npm install --prefix client"
     },

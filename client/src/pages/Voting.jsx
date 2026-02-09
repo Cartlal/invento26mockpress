@@ -275,10 +275,10 @@ function Voting() {
                         <div className="bg-black/60 border border-dark-border p-4 backdrop-blur-sm">
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                <span className="font-mono-tech text-xs text-yellow-500 tracking-wider">STANDBY TARGET</span>
+                                <span className="font-mono-tech text-xs text-yellow-500 tracking-wider">NEXT PARTICIPANT</span>
                             </div>
                             <p className="font-rajdhani text-lg font-semibold text-white">{participant.name}</p>
-                            <p className="font-mono-tech text-xs text-gray-500">ID: {participant.code || `P-${participant.orderNumber}`}</p>
+
                         </div>
                     )}
                 </div>
@@ -297,7 +297,7 @@ function Voting() {
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-spy-green rounded-full pulse-glow"></div>
-                        <span className="font-mono-tech text-xs text-spy-green tracking-wider">LIVE UPLINK</span>
+                        <span className="font-mono-tech text-xs text-spy-green tracking-wider uppercase">Voting Active</span>
                     </div>
                     <img src="/assets/Invento-logo.png" alt="Logo" className="h-10" />
                 </div>
@@ -324,17 +324,11 @@ function Voting() {
                             </div>
 
                             <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Target className="w-4 h-4 text-spy-green" />
-                                    <span className="font-mono-tech text-[10px] text-spy-green tracking-widest uppercase">ACTIVE_TARGET_IDENTIFIED</span>
-                                </div>
+
                                 <h2 className="font-orbitron text-xl font-black text-white mb-1 tracking-wide uppercase">
                                     {participant.name}
                                 </h2>
-                                <div className="flex items-center gap-3 text-[10px] font-mono-tech text-gray-500">
-                                    <span>ID: {participant.code || `P-${participant.orderNumber}`}</span>
-                                    <span className="text-spy-green">• SEQ: #{participant.orderNumber}</span>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -344,11 +338,11 @@ function Voting() {
                 {hasVoted ? (
                     <div className="bg-black/80 border-2 border-spy-green hud-corners p-8 text-center backdrop-blur-sm">
                         <CheckCircle className="w-16 h-16 text-spy-green mx-auto mb-4 animate-pulse" />
-                        <h3 className="font-orbitron text-xl font-bold text-spy-green mb-2 neon-green">
-                            INTEL TRANSMITTED
+                        <h3 className="font-orbitron text-xl font-bold text-spy-green mb-2 neon-green uppercase">
+                            Vote Recorded
                         </h3>
                         <p className="font-mono-tech text-xs text-gray-400 tracking-wider">
-                            VOTE SECURED IN ARCHIVES
+                            YOUR RESPONSE HAS BEEN SAVED
                         </p>
                         <div className="mt-4 font-mono-tech text-sm text-gray-500">
                             SCORE SUBMITTED: <span className="text-spy-green font-bold">{selectedScore}/10</span>
@@ -359,10 +353,7 @@ function Voting() {
                         <div className="mb-6">
                             {/* Score Display */}
                             <div className="bg-black/80 border-2 border-spy-green/50 p-6 mb-6 text-center backdrop-blur-sm">
-                                <div className="flex items-center justify-center gap-3 mb-3">
-                                    <Gauge className="w-6 h-6 text-spy-green" />
-                                    <span className="font-mono-tech text-xs text-gray-400 tracking-wider uppercase">ASSESSMENT_INPUT</span>
-                                </div>
+
 
                                 <div className={`font-orbitron text-6xl font-black mb-1 ${getScoreColor(selectedScore)}`}>
                                     {selectedScore}
@@ -439,10 +430,10 @@ function Voting() {
                                 {voteSubmitting ? (
                                     <span className="flex items-center justify-center gap-2">
                                         <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                                        TRANSMITTING...
+                                        SUBMITTING...
                                     </span>
                                 ) : (
-                                    'SUBMIT INTEL'
+                                    'SUBMIT VOTE'
                                 )}
                             </button>
                         </div>
