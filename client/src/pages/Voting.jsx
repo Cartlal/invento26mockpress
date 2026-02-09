@@ -17,14 +17,8 @@ function Voting() {
     const [isNameless, setIsNameless] = useState(true);
 
     useEffect(() => {
-        // Check for existing session
-        const storedName = localStorage.getItem("voterName");
-        const storedPhone = localStorage.getItem("voterPhone");
-        if (storedName) {
-            setVoterName(storedName);
-            if (storedPhone) setVoterPhone(storedPhone);
-            setIsNameless(false);
-        }
+        // No longer requiring stored identity
+        setIsNameless(false);
     }, []);
 
     const handleNameSubmit = (e) => {
@@ -81,6 +75,25 @@ function Voting() {
         return () => {
             socket.off("stateUpdate");
         };
+    }, [participant]);
+
+    // Check if already voted on mount or participant change
+    useEffect(() => {
+        const checkVotingStatus = async () => {
+            if (participant?._id) {
+                const deviceHash = localStorage.getItem("deviceHash") || Math.random().toString(36).substring(7);
+                localStorage.setItem("deviceHash", deviceHash);
+                try {
+                    const res = await axios.get(`${API_URL}/vote/check/${participant._id}/${deviceHash}`);
+                    if (res.data.voted) {
+                        setHasVoted(true);
+                    }
+                } catch (err) {
+                    console.error("Status check failed:", err);
+                }
+            }
+        };
+        checkVotingStatus();
     }, [participant]);
 
     const handleVote = async () => {
@@ -161,66 +174,7 @@ function Voting() {
         return '/assets/spy1.png'; // Elite spy (10/10)
     };
 
-    // NAME ENTRY SCREEN (UPDATED)
-    if (isNameless) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('/assets/invento-bg-mobile.webp')" }}></div>
-                <div className="w-full max-w-md z-10">
-                    <div className="text-center mb-8">
-                        <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-24 h-24 mx-auto mb-4" />
-                        <h1 className="font-orbitron text-2xl font-black text-white mb-2 tracking-wider">
-                            IDENTITY REQUIRED
-                        </h1>
-                        <p className="font-mono-tech text-xs text-spy-blue tracking-widest">
-                            PLEASE ENTER YOUR DETAILS TO PROCEED
-                        </p>
-                    </div>
 
-                    <div className="bg-dark-panel border-2 border-spy-blue hud-corners p-8 backdrop-blur-sm">
-                        <form onSubmit={handleNameSubmit} className="space-y-6">
-                            <div>
-                                <label className="block font-mono-tech text-xs text-spy-blue tracking-widest mb-2">
-                                    CODENAME / ALIAS
-                                </label>
-                                <input
-                                    type="text"
-                                    value={voterName}
-                                    onChange={(e) => setVoterName(e.target.value)}
-                                    className="w-full bg-black border-2 border-spy-blue/50 focus:border-spy-blue px-4 py-3 font-rajdhani text-white text-lg outline-none transition-all placeholder-gray-700 text-center uppercase tracking-widest"
-                                    placeholder="ENTER NAME"
-                                    required
-                                    autoFocus
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block font-mono-tech text-xs text-spy-blue tracking-widest mb-2">
-                                    SECURE CONTACT (PHONE)
-                                </label>
-                                <input
-                                    type="tel"
-                                    value={voterPhone}
-                                    onChange={(e) => setVoterPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                                    className="w-full bg-black border-2 border-spy-blue/50 focus:border-spy-blue px-4 py-3 font-mono-tech text-white text-lg outline-none transition-all placeholder-gray-700 text-center tracking-widest"
-                                    placeholder="XXX-XXX-XXXX"
-                                    required
-                                    pattern="[0-9]{10}"
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="w-full py-4 bg-spy-blue text-black font-orbitron font-bold text-sm tracking-widest border-2 border-spy-blue hover:bg-transparent hover:text-spy-blue transition-all"
-                            >
-                                AUTHENTICATE
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     if (!eventState) {
         return (
@@ -248,10 +202,7 @@ function Voting() {
                             INTO THE <span className="text-spy-red">SPYVERSE</span>
                         </h1>
                         <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="w-32 mx-auto mb-2" />
-                        <div className="flex justify-center gap-2 mt-2">
-                            <span className="font-mono-tech text-xs text-gray-500 tracking-widest">AGENT: {voterName.toUpperCase()}</span>
-                            <button onClick={() => setIsNameless(true)} className="text-[10px] text-spy-blue underline">CHANGE</button>
-                        </div>
+
                     </div>
 
                     {/* Status Panel */}
@@ -301,9 +252,7 @@ function Voting() {
                     </div>
                     <img src="/assets/Invento-logo.png" alt="Logo" className="h-10" />
                 </div>
-                <div className="text-right">
-                    <span className="font-mono-tech text-[10px] text-gray-400 tracking-widest">AGENT: {voterName.toUpperCase()}</span>
-                </div>
+
             </div>
 
             {/* Main Content */}

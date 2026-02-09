@@ -4,14 +4,35 @@ const Vote = require('../models/Vote');
 const Participant = require('../models/Participant');
 const EventState = require('../models/EventState');
 
+// Check if user has already voted
+router.get('/check/:participantId/:deviceHash', async (req, res) => {
+    try {
+        const { participantId, deviceHash } = req.params;
+        const ipAddress = req.ip;
+        const isLocalhost = ipAddress === '::1' || ipAddress === '127.0.0.1' || ipAddress === '1';
+
+        let checkConditions = [{ deviceHash }];
+        if (!isLocalhost) {
+            checkConditions.push({ ipAddress });
+        }
+
+        const existingVote = await Vote.findOne({
+            participantId,
+            $or: checkConditions
+        });
+
+        res.json({ voted: !!existingVote });
+    } catch (err) {
+        res.status(500).json({ error: 'Status check failed' });
+    }
+});
+
 router.post('/', async (req, res) => {
     try {
         const { participantId, score, deviceHash, voterName, voterPhone } = req.body;
         const ipAddress = req.ip;
 
-        if (!voterName) {
-            return res.status(400).json({ error: 'Please enter your name before voting.' });
-        }
+
 
         // 1. Check if voting is open
         const state = await EventState.findOne();
@@ -33,10 +54,8 @@ router.post('/', async (req, res) => {
         const isLocalhost = ipAddress === '::1' || ipAddress === '127.0.0.1' || ipAddress === '1';
 
         // Build query to check for existing votes
-        // We always check deviceHash and voterName
         let checkConditions = [
-            { deviceHash },
-            { voterName }
+            { deviceHash }
         ];
 
         // Only check IP if NOT localhost (allows multiple testers on same machine/wifi if needed, or strictly enforces on prod)

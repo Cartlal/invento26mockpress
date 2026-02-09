@@ -26,22 +26,9 @@ function VotingView({ participant, liveStats, average }) {
 
                 {/* Right Side: Identity Details */}
                 <div className="flex-1 text-left">
-                    <div className="flex items-center gap-3 mb-6">
-                        <TrendingUp className="w-10 h-10 text-spy-green" />
-                        <span className="font-mono-tech text-xl text-spy-green tracking-[0.4em] uppercase font-bold">
-                            LIVE INTELLIGENCE STREAMING
-                        </span>
-                    </div>
-
-                    <h1 className="font-orbitron text-[90px] font-black text-white mb-4 leading-none uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                    <h1 className="font-orbitron text-[90px] font-black text-white mb-4 leading-none uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] mt-12">
                         {participant.name}
                     </h1>
-
-                    <div className="flex gap-8 text-gray-500 font-mono-tech text-xl mb-12">
-                        <span>ID: <span className="text-white">{participant.code || `P-${participant.orderNumber}`}</span></span>
-                        <span className="text-spy-green">|</span>
-                        <span>SEQUENCE: <span className="text-white">#{participant.orderNumber}</span></span>
-                    </div>
 
                     <div className="flex flex-col gap-8">
                         <div className="inline-flex items-center gap-6 bg-spy-green/10 border-2 border-spy-green px-10 py-5 group hover:bg-spy-green/20 transition-all max-w-md">
@@ -53,9 +40,6 @@ function VotingView({ participant, liveStats, average }) {
                                 VOTING ACTIVE
                             </span>
                         </div>
-                        <p className="font-mono-tech text-xs text-gray-500 tracking-[0.5em] pl-2 uppercase">
-                            +++ SECURE JUDGE TERMINALS ENCRYPTED +++
-                        </p>
                     </div>
                 </div>
             </div>
