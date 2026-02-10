@@ -10,6 +10,9 @@ import Login from "./pages/Login";
 import SecretOnboarding from "./pages/SecretOnboarding";
 import ProtectedRoute from "./components/ProtectedRoute";
 import QRCodePage from "./pages/QRCodePage";
+import GalleryView from "./pages/GalleryView";
+import AddParticipant from "./pages/AddParticipant";
+import GalleryController from "./pages/GalleryController";
 
 function App() {
   return (
@@ -48,6 +51,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['admin', 'controller']}>
                 <DisplayControl />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gallery-control"
+            element={
+              <ProtectedRoute allowedRoles={['gallery', 'admin', 'coordinator']}>
+                <GalleryController />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-participant"
+            element={
+              <ProtectedRoute allowedRoles={['coordinator', 'admin']}>
+                <AddParticipant />
               </ProtectedRoute>
             }
           />

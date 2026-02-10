@@ -120,7 +120,7 @@ function SecretOnboarding() {
                         <label className="block font-mono-tech text-xs text-spy-blue tracking-widest mb-2">
                             CLEARANCE LEVEL
                         </label>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-3 mb-4">
                             <button
                                 type="button"
                                 onClick={() => setRole('controller')}
@@ -140,6 +140,28 @@ function SecretOnboarding() {
                                     }`}
                             >
                                 DISPLAY
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setRole('gallery')}
+                                className={`py-2 text-xs font-bold font-orbitron border transition-all ${role === 'gallery'
+                                    ? 'bg-spy-green text-black border-spy-green'
+                                    : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-green'
+                                    }`}
+                            >
+                                GALLERY
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setRole('coordinator')}
+                                className={`py-2 text-xs font-bold font-orbitron border transition-all ${role === 'coordinator'
+                                    ? 'bg-spy-purple text-black border-spy-purple'
+                                    : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-purple'
+                                    }`}
+                            >
+                                COORDINATOR
                             </button>
                             <button
                                 type="button"

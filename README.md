@@ -1,173 +1,103 @@
-# Invento 2026 - Mock Press Voting System 🎥🕵️‍♂️
+# INVENTO 2026 - MOCK PRESS PROTOCOL (Into the Spyverse) 🕵️‍♂️🎥
 
-**Code Name**: *Project Spyglass*  
-**Event**: Invento 2026 Mock Press  
-**Status**: ![Production Ready](https://img.shields.io/badge/Status-Deployed-success) ![Security Level](https://img.shields.io/badge/Security-High-red)
+**Codename**: Project Spyglass 2.0  
+**Status**: ![Production Ready](https://img.shields.io/badge/Status-Deployed-success) ![Redis](https://img.shields.io/badge/Caching-Full-blue) ![Aesthetics](https://img.shields.io/badge/Aesthetics-Premium-red)
 
-A sophisticated, cyberpunk-themed real-time voting and display system engineered for the high-stakes **Invento 2026 Mock Press** event. This system transforms the venue into a digital surveillance hub, handling live audience voting, dynamic projector displays, and comprehensive administrative control with a robust role-based security model.
+A premium, high-stakes real-time voting and cinematic display system engineered for the **Invento 2026 Mock Press** event. This system handles live audience evaluation, dynamic character galleries, and ultra-responsive projector displays with a heavy "Cyber-Spy" aesthetic.
 
 ---
 
 ## 🌟 Key Features
 
+### 🖼️ Cinematic Character Gallery
+*   **Interrogation Photos**: High-resolution gallery for each participant (up to 20MB/image).
+*   **Dynamic Carousel**: Fluid transitions between character shots on the main display.
+*   **Gallery Controller**: Dedicated dashboard to navigate images (Next/Prev) for the active participant in real-time.
+
 ### 🗳️ Secure Voting Interface
-*   **Agent Identity Protocol**: Voters must authenticate with a **Codename** and **Phone Number** to access the voting terminal.
-*   **One-Vote Policy**: Strict IP, Device, and Identity tracking ensures one vote per person per participant.
-*   **Smart Bypass**: Automatically allows multiple votes from `localhost` for testing, while enforcing strict rules for external IPs.
-*   **Real-time Feedback**: Instant visual confirmation with spy-themed animations upon successful vote transmission.
-*   **Score Locking**: Prevents accidental double-voting or changing scores after submission.
+*   **Agent Identity Protocol**: Voters authenticate via **Codename** and **Phone Number**.
+*   **Anti-Fraud Tracking**: Triple-layer verification (IP, Device Hash, and Identify) to ensure 100% fair play.
+*   **Live Average Score**: Real-time score aggregation shown on the main display upon result reveal.
 
-### 🎮 Mission Control (Admin Dashboard)
-*   **Live Monitor**: A real-time surveillance dashboard showing:
-    *   **Active Uplinks**: Total connected users in real-time.
-    *   **Live Feed**: Scrolling log of incoming votes with voter identity.
-    *   **Voter Dossiers**: Click on any voter to view their entire voting history across all participants.
-    *   **Queue Management**: See upcoming participants and current target status.
-*   **Participant Management**: Add, edit, and reorder participants on the fly.
-*   **Image Intelligence**: **Upload high-res photos (up to 10MB)** for each participant directly from the dashboard.
-*   **Emergency Protocols**:
-    *   **Panic Button**: Instantly freezes all voting operations.
-    *   **Force Reset**: Pushes the display to a secure "Waiting" screen.
-*   **Audit Logs**: detailed tracking of every admin action (who did what, when).
+### 🖥️ Display Control Center (The HUD)
+*   **Director Mode**: Central hub for toggling Voting, Results, Gallery, or Standby modes.
+*   **Live Preview**: Real-time "Monitor" view of exactly what the audience is seeing.
+*   **Hard Reset Protocol**: One-click emergency flush button to clear memory/cache if the system hangs.
 
-### 🖥️ Display Control Center
-*   **Director Mode**: A dedicated interface for the stage manager/technician.
-*   **Drag-and-Drop Queue**: Reorder participants instantly by dragging them in the list.
-*   **Live Preview**: See exactly what is on the main projector screen before going live.
-*   **Quick Actions**: Toggle voting, lock/unlock scores, and switch participants with a single click.
-*   **Edit on the Fly**: Update participant names and photos directly from the control booth.
-
-### 🎥 Main Display System
-*   **Projector Mode**: A dedicated, clean view `(/display)` for the main stage screen.
-*   **Dynamic State**: Automatically switches between:
-    *   **Standby**: "Waiting for Target"
-    *   **Active**: Participant Photo + Name + Live Voting Status
-    *   **Results**: Final Score Reveal
-*   **Cinematic Animations**: Smooth, high-tech transitions powered by Framer Motion.
-
-### 🏆 Leaderboard
-*   **Live Rankings**: Automatic sorting based on average score.
-*   **Top 3 Highlight**: Special visual distinction for the podium finishers (Gold, Silver, Bronze).
-
----
-
-## 🔐 Security & Roles
-
-The system implements a strict Role-Based Access Control (RBAC) system:
-
-| Role | Access Level | Description |
-|---|---|---|
-| **SUPER ADMIN** | `Full Access` | Can manage users, edit participants, view sensitive logs, and control the event. |
-| **CONTROLLER** | `Event Access` | Can navigate participants (Next/Prev), upload photos, and toggle voting. Cannot delete critical data. |
-| **DISPLAY** | `Read Only` | Restricted account for the projector PC. Can only view the Display page. |
-| **VOTER** | `Public` | Can only access the voting page (`/`) and leaderboard (`/leaderboard`). |
+### ⚡ Performance Architecture
+*   **Redis Caching**: Extreme performance with data caching for participants, leaderboard, and event state.
+*   **Real-time Sockets**: Zero-latency synchronization between the controller, voters, and the projector.
+*   **Preloaded Assets**: All character photos are pre-cached and bundled for zero-lag reveal.
 
 ---
 
 ## 🛠️ Tech Stack
 
-*   **Frontend**: React, Tailwind CSS, Framer Motion (Animations), Lucide React (Icons).
-*   **Backend**: Node.js, Express.
-*   **Database**: MongoDB (Persists Votes, Participants, Logs).
-*   **Real-time**: Socket.io (Instant updates for Votes, State, and User Counts).
-*   **Security**: JWT Authentication, IP Tracking, Device Fingerprinting.
+*   **Frontend**: React + Vite, Tailwind CSS (Vanilla Logic), Lucide Icons.
+*   **Backend**: Node.js + Express.
+*   **Database**: MongoDB Atlas (Cloud Database).
+*   **Caching/Memory**: Redis Labs (Ultra-fast data layer).
+*   **Protocol**: Socket.io (Bi-directional real-time communication).
 
 ---
 
-## 🚀 Installation & Setup
+## 🚀 Setup & Installation
 
-### Prerequisites
-*   Node.js (v18+)
-*   MongoDB (Local or Atlas)
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/Cartlal/invento_26_mockpress.git
-cd invento_26_mockpress
-```
-
-### 2. Backend Setup
-Navigate to the server folder:
-```bash
-cd server
-npm install
-```
-
-Create a `.env` file in `server/`:
+### 1. Environment Config
+Create a `.env` file in the `server/` directory:
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/invento26_voting
-JWT_SECRET=your_secure_jwt_secret
-MASTER_KEY=invento2026_super_secret_key  # For creating new admin accounts
+MONGO_URI=your_mongodb_atlas_uri
+REDIS_URL=your_redis_labs_uri
+JWT_SECRET=protocol_spy_secret
+MASTER_KEY=your_onboarding_key
+NODE_ENV=production
 ```
 
-Start the server:
+### 2. Local Development
 ```bash
-npm run dev
-```
-
-### 3. Frontend Setup
-Navigate to the client folder:
-```bash
-cd client
+# Install everything
 npm install
-```
 
-Start the client:
-```bash
+# Run Backend & Frontend concurrently
 npm run dev
 ```
 
-The app will launch at `http://localhost:5173`.
+### 3. Production Deployment (Render)
+This repository is optimized for **Render.com**.
+*   **Automated Connect**: Render will detect `render.yaml` and configure everything.
+*   **Build Command**: `npm install && npm run build` (Root)
+*   **Start Command**: `npm start` (Root)
+*   **Static Assets**: Character images must be placed in `server/images_char/`.
 
 ---
 
-## 🕵️‍♂️ Hidden Onboarding (Protocol Alpha)
+## 📂 Project Intelligence (Directory Map)
 
-To create new staff accounts without accessing the database directly:
-1.  Go to `http://localhost:5173/protocol-alpha`
-2.  Enter the **Master Key** (defined in `.env`).
-3.  Create your Admin, Controller, or Display users.
-
----
-
-## 📂 Project Structure
-
-```
-invento_26_mockpress/
-├── client/                 # React Frontend
-│   ├── src/
-│   │   ├── components/     # UI Components (LiveMonitor, AnalyticsPanel)
-│   │   ├── pages/          # Routes (Admin, Voting, Display, DisplayControl)
-│   │   └── context/        # Socket & Auth Context
-├── server/                 # Node.js Backend
-│   ├── models/             # Mongoose Schemas (Vote, Participant, EventState)
-│   ├── routes/             # API Endpoints (Auth, Admin, Vote)
-│   └── index.js            # Entry Point (Socket.io setup)
-└── README.md               # Documentation
+```bash
+invento26mockpress/
+├── archive/           # Deprecated/Temporary scripts
+├── client/            # React Frontend (Vite)
+├── docs/              # System Architecture & Implementation Plans
+├── server/            # Node.js API & Socket Server
+│   ├── images_char/   # Character & Gallery Image Assets (Bundled)
+│   ├── config/        # Database & Redis connectors
+│   ├── routes/        # Mission logic (Admin, Vote, Gallery, Auth)
+│   ├── uploads/       # Dynamic participant photo directory
+│   └── index.js       # Core Surveillance Hub
+├── render.yaml        # Automated Deployment Blueprint
+└── package.json       # Master Scripts
 ```
 
 ---
 
-## 📜 API Reference
+## 🕵️‍♂️ Staff Protocol (Access)
 
-### Auth
-*   `POST /api/auth/login` - Staff login
-*   `POST /api/auth/onboard-user` - Create new staff (Master Key required)
-
-### Admin
-*   `GET /api/admin/participants` - List all participants
-*   `POST /api/admin/participant` - Create participant (supports photo)
-*   `PUT /api/admin/participant/:id` - Update participant
-*   `POST /api/admin/state` - Update event state (Open/Close voting)
-*   `GET /api/admin/stats` - Get live dashboard stats
-*   `GET /api/admin/voters` - Get list of recent voters
-*   `GET /api/admin/logs` - System audit logs
-
-### Voting
-*   `POST /api/vote` - Cast a vote (requires Name + Phone)
-*   `GET /api/vote/leaderboard` - Get rankings
+1.  **Projector Display**: Access via `/display` (Auto-refresh & Fullscreen ready).
+2.  **Mission Control**: Access via `/control` (Requires Superintendent/Admin credentials).
+3.  **Onboarding**: New staff can be added via the hidden `/protocol-alpha` endpoint using the `MASTER_KEY`.
 
 ---
 
-**Authorized Personnel Only • Invento 2026**
+**AUTHORIZED PERSONNEL ONLY • UNIVERSITY CLEARANCE REQUIRED**  
+*Invento 2026 • KLE Technological University • Into the Spyverse*

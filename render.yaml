@@ -14,3 +14,5 @@ services:
         generateValue: true
       - key: MASTER_KEY
         sync: false
+      - key: REDIS_URL
+        sync: false
