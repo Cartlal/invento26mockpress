@@ -19,7 +19,19 @@ import {
     Edit,
     Settings,
     BarChart2,
-    FileText
+    FileText,
+    ExternalLink,
+    QrCode,
+    Trophy,
+    Tv,
+    Layout,
+    UserPlus,
+    RefreshCcw,
+    Zap,
+    Image as ImageIcon,
+    Gamepad2,
+    ShieldCheck,
+    Terminal
 } from 'lucide-react';
 
 import AnalyticsPanel from '../components/AnalyticsPanel';
@@ -29,9 +41,14 @@ import { apiUrl as API_URL } from "../config";
 
 function Admin() {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState("monitor"); // 'monitor', 'participants', 'controls', 'analytics'
+    const [activeTab, setActiveTab] = useState("monitor");
     const [participants, setParticipants] = useState([]);
-    const [eventState, setEventState] = useState({ isVotingOpen: false, currentParticipantId: null });
+    const [eventState, setEventState] = useState({
+        isVotingOpen: false,
+        currentParticipantId: null,
+        displayMode: 'waiting',
+        qrCodeUrl: ''
+    });
     const [liveVotes, setLiveVotes] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({ name: '', orderNumber: '', code: '', photoUrl: '' });
@@ -164,11 +181,8 @@ function Admin() {
             <aside className="w-full md:w-64 bg-dark-panel border-r border-spy-green/30 flex-shrink-0 flex flex-col h-screen">
                 <div className="p-6 border-b border-spy-green/30">
                     <h1 className="font-orbitron text-2xl font-black text-white tracking-wider">
-                        INVENTO <span className="text-spy-green">ADMIN</span>
+                        ADMIN
                     </h1>
-                    <p className="font-mono-tech text-xs text-spy-green/70 tracking-widest mt-1">
-                        MOCK PRESS CONTROL
-                    </p>
                 </div>
 
                 <nav className="p-4 space-y-2 flex-grow overflow-y-auto">
@@ -181,7 +195,7 @@ function Admin() {
                     >
                         <div className="flex items-center gap-3">
                             <Activity size={18} />
-                            LIVE MONITOR
+                            MONITOR
                         </div>
                     </button>
 
@@ -194,7 +208,7 @@ function Admin() {
                     >
                         <div className="flex items-center gap-3">
                             <Users size={18} />
-                            PARTICIPANTS
+                            ROSTER
                         </div>
                     </button>
 
@@ -206,7 +220,7 @@ function Admin() {
                             }`}
                     >
                         <div className="flex items-center gap-3">
-                            <Settings size={18} />
+                            <Zap size={18} />
                             CONTROLS
                         </div>
                     </button>
@@ -225,20 +239,66 @@ function Admin() {
                     </button>
                 </nav>
 
-                <div className="p-6 border-t border-spy-green/30 space-y-3">
+                <div className="p-4 border-t border-spy-green/30 space-y-2 overflow-y-auto max-h-[50vh] custom-scrollbar">
+                    <p className="font-mono-tech text-[10px] text-gray-500 tracking-[0.2em] mb-4 uppercase px-2 text-center border-b border-gray-800 pb-2">Links</p>
+
+                    <button
+                        onClick={() => navigate('/admin')}
+                        className={`w-full flex items-center gap-3 px-4 py-2 font-orbitron font-bold text-[10px] tracking-wider border transition-all ${window.location.pathname === '/admin' ? 'bg-spy-green text-black border-spy-green' : 'bg-gray-900/50 text-gray-400 border-gray-800 hover:border-spy-green hover:text-spy-green'}`}
+                    >
+                        <Layout size={14} /> ADMIN
+                    </button>
+
+                    <button
+                        onClick={() => window.open('/display', '_blank')}
+                        className="w-full flex items-center gap-3 px-4 py-2 bg-gray-900/50 text-gray-400 font-orbitron font-bold text-[10px] tracking-wider border border-gray-800 hover:border-spy-blue hover:text-spy-blue transition-all"
+                    >
+                        <Tv size={14} /> DISPLAY
+                    </button>
+
+                    <button
+                        onClick={() => navigate('/display-control')}
+                        className="w-full flex items-center gap-3 px-4 py-2 bg-gray-900/50 text-gray-400 font-orbitron font-bold text-[10px] tracking-wider border border-gray-800 hover:border-spy-blue hover:text-spy-blue transition-all"
+                    >
+                        <Gamepad2 size={14} /> CONTROL
+                    </button>
+
+                    <button
+                        onClick={() => navigate('/gallery-control')}
+                        className="w-full flex items-center gap-3 px-4 py-2 bg-gray-900/50 text-gray-400 font-orbitron font-bold text-[10px] tracking-wider border border-gray-800 hover:border-spy-red hover:text-spy-red transition-all"
+                    >
+                        <ImageIcon size={14} /> GALLERY
+                    </button>
+
+                    <button
+                        onClick={() => navigate('/add-participant')}
+                        className="w-full flex items-center gap-3 px-4 py-2 bg-gray-900/50 text-gray-400 font-orbitron font-bold text-[10px] tracking-wider border border-gray-800 hover:border-spy-green hover:text-spy-green transition-all"
+                    >
+                        <UserPlus size={14} /> REGISTER
+                    </button>
+
                     <button
                         onClick={() => navigate('/logs')}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-spy-blue/10 text-spy-blue font-orbitron font-bold text-xs tracking-wider border border-spy-blue/50 hover:bg-spy-blue hover:text-black transition-all"
+                        className="w-full flex items-center gap-3 px-4 py-2 bg-gray-900/50 text-gray-400 font-orbitron font-bold text-[10px] tracking-wider border border-gray-800 hover:border-white hover:text-white transition-all"
                     >
-                        <FileText size={16} />
-                        AUDIT LOGS
+                        <ShieldCheck size={14} /> LOGS
                     </button>
+
+                    <div className="pt-4 mt-2 border-t border-gray-800">
+                        <p className="font-mono-tech text-[9px] text-spy-red/50 tracking-[0.2em] mb-2 uppercase px-2">Dev</p>
+                        <button
+                            onClick={() => navigate('/protocol-alpha')}
+                            className="w-full flex items-center gap-3 px-4 py-2 bg-spy-red/5 text-spy-red/70 font-orbitron font-bold text-[10px] tracking-wider border border-spy-red/20 hover:bg-spy-red hover:text-white transition-all"
+                        >
+                            <Terminal size={14} /> ONBOARDING
+                        </button>
+                    </div>
+
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-spy-red/10 text-spy-red font-orbitron font-bold text-xs tracking-wider border border-spy-red/50 hover:bg-spy-red hover:text-white transition-all"
+                        className="w-full flex items-center gap-3 px-4 py-2 bg-spy-red/10 text-spy-red font-orbitron font-bold text-[10px] tracking-wider border border-spy-red/50 hover:bg-spy-red hover:text-white transition-all mt-4"
                     >
-                        <LogOut size={16} />
-                        LOGOUT
+                        <LogOut size={14} /> LOGOUT
                     </button>
                 </div>
             </aside>
@@ -256,11 +316,11 @@ function Admin() {
                     <div className="space-y-6">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                             <div>
-                                <h2 className="font-orbitron text-3xl font-black text-white tracking-wider mb-2">
-                                    PARTICIPANT ROSTER
+                                <h2 className="font-orbitron text-3xl font-black text-white tracking-wider mb-2 uppercase">
+                                    Roster
                                 </h2>
-                                <p className="font-mono-tech text-xs text-spy-green tracking-widest">
-                                    MANAGE ACTIVE TARGETS AND SEQUENCE
+                                <p className="font-mono-tech text-xs text-spy-green tracking-widest uppercase">
+                                    Manage active targets
                                 </p>
                             </div>
                             <button
@@ -268,7 +328,7 @@ function Admin() {
                                 className="flex items-center justify-center gap-2 px-6 py-3 bg-spy-green text-black font-orbitron font-bold text-sm tracking-wider border-2 border-spy-green hover:bg-transparent hover:text-spy-green transition-all"
                             >
                                 <PlusCircle size={18} />
-                                NEW PARTICIPANT
+                                ADD TARGET
                             </button>
                         </div>
 
@@ -354,9 +414,9 @@ function Admin() {
                         {/* Voting Control */}
                         <div className="bg-dark-panel border border-spy-green/30 p-6 h-fit">
                             <div className="flex items-center gap-2 mb-6">
-                                <Activity className="w-5 h-5 text-spy-green" />
-                                <h2 className="font-orbitron text-lg font-bold text-white tracking-wider">
-                                    VOTING CONTROL
+                                <Activity size={20} className="w-5 h-5 text-spy-green" />
+                                <h2 className="font-orbitron text-lg font-bold text-white tracking-wider uppercase">
+                                    Voting
                                 </h2>
                             </div>
 
@@ -372,8 +432,8 @@ function Admin() {
                                         CHANNEL STATUS
                                     </span>
                                 </div>
-                                <p className={`font-orbitron text-xl font-bold ${eventState.isVotingOpen ? 'text-spy-green neon-green' : 'text-spy-red neon-red'}`}>
-                                    {eventState.isVotingOpen ? 'OPEN / RECEIVING' : 'CLOSED / LOCKED'}
+                                <p className={`font-orbitron text-xl font-bold uppercase ${eventState.isVotingOpen ? 'text-spy-green neon-green' : 'text-spy-red neon-red'}`}>
+                                    {eventState.isVotingOpen ? 'Active' : 'Locked'}
                                 </p>
                             </div>
 
@@ -383,7 +443,7 @@ function Admin() {
                                     ACTIVE TARGET
                                 </span>
                                 <p className="font-rajdhani text-lg font-semibold text-white truncate">
-                                    {participants.find(p => p._id === eventState.currentParticipantId)?.name || "NONE SELECTED"}
+                                    {participants.find(p => p._id === eventState.currentParticipantId)?.name || "Inactive"}
                                 </p>
                             </div>
 
@@ -398,47 +458,85 @@ function Admin() {
                                 {eventState.isVotingOpen ? (
                                     <>
                                         <StopCircle size={20} />
-                                        CLOSE VOTING CHANNEL
+                                        LOCK VOTING
                                     </>
                                 ) : (
                                     <>
                                         <PlayCircle size={20} />
-                                        OPEN VOTING CHANNEL
+                                        UNLOCK VOTING
                                     </>
                                 )}
                             </button>
+                        </div>
+
+                        {/* Display Mode Protocol */}
+                        <div className="bg-dark-panel border border-spy-blue/30 p-6 h-fit">
+                            <div className="flex items-center gap-2 mb-6">
+                                <Layout className="w-5 h-5 text-spy-blue" />
+                                <h2 className="font-orbitron text-lg font-bold text-white tracking-wider uppercase">
+                                    Display
+                                </h2>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                {[
+                                    { id: 'waiting', icon: <Monitor size={14} />, label: 'STANDBY' },
+                                    { id: 'voting_open', icon: <PlayCircle size={14} />, label: 'VOTING' },
+                                    { id: 'result', icon: <Shield size={14} />, label: 'RESULT' },
+                                    { id: 'qr', icon: <QrCode size={14} />, label: 'QR_CODE' },
+                                    { id: 'leaderboard', icon: <Trophy size={14} />, label: 'RANKINGS' },
+                                    { id: 'gallery', icon: <Tv size={14} />, label: 'GALLERY' }
+                                ].map(mode => (
+                                    <button
+                                        key={mode.id}
+                                        onClick={() => updateState({ displayMode: mode.id })}
+                                        className={`flex items-center gap-2 px-3 py-3 font-mono-tech text-[10px] border transition-all ${eventState.displayMode === mode.id
+                                            ? 'bg-spy-blue text-black border-spy-blue font-bold shadow-neon-blue'
+                                            : 'text-gray-400 border-spy-blue/20 hover:border-spy-blue/50 hover:bg-spy-blue/10'
+                                            }`}
+                                    >
+                                        {mode.icon} {mode.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Emergency Controls */}
                         <div className="bg-dark-panel border-2 border-spy-red p-6 h-fit">
                             <div className="flex items-center gap-2 mb-6">
                                 <Shield className="w-6 h-6 text-spy-red animate-pulse" />
-                                <h2 className="font-orbitron text-lg font-bold text-spy-red tracking-wider">
-                                    EMERGENCY OVERRIDE
+                                <h2 className="font-orbitron text-lg font-bold text-spy-red tracking-wider uppercase">
+                                    Reset
                                 </h2>
                             </div>
 
                             <div className="space-y-4">
                                 <button
-                                    onClick={() => {
-                                        if (confirm("EMERGENCY STOP: Are you sure? This will close all voting immediately.")) {
-                                            updateState({ isVotingOpen: false });
+                                    onClick={async () => {
+                                        if (confirm("PROTOCOL: FLUSH CACHE? This will reset the Redis data streams.")) {
+                                            try {
+                                                await axios.post(`${API_URL}/admin/redis-reset`);
+                                                toast.success("CACHE_FLUSHED");
+                                                window.location.reload();
+                                            } catch (e) {
+                                                toast.error("PROTOCOL_FAILURE");
+                                            }
                                         }
                                     }}
-                                    className="w-full py-4 bg-spy-red text-white font-orbitron font-bold tracking-widest border-2 border-spy-red hover:bg-transparent hover:text-spy-red transition-all"
+                                    className="w-full py-4 bg-spy-red/10 text-spy-red font-orbitron font-bold tracking-widest border-2 border-spy-red hover:bg-spy-red hover:text-white transition-all flex items-center justify-center gap-3"
                                 >
-                                    PANIC: CLOSE ALL
+                                    <RefreshCcw size={18} /> RESET SYSTEM
                                 </button>
 
                                 <button
                                     onClick={() => {
                                         if (confirm("RESET DISPLAY: This will clear the active participant.")) {
-                                            updateState({ currentParticipantId: null, isVotingOpen: false });
+                                            updateState({ currentParticipantId: null, isVotingOpen: false, displayMode: 'waiting' });
                                         }
                                     }}
-                                    className="w-full py-4 bg-orange-600 text-white font-orbitron font-bold tracking-widest border-2 border-orange-600 hover:bg-transparent hover:text-orange-600 transition-all"
+                                    className="w-full py-4 bg-orange-600/10 text-orange-500 font-orbitron font-bold tracking-widest border-2 border-orange-600 hover:bg-orange-600 hover:text-white transition-all"
                                 >
-                                    RESET DISPLAY
+                                    RESET FEED
                                 </button>
                             </div>
                         </div>
@@ -447,8 +545,8 @@ function Admin() {
                         <div className="bg-dark-panel border border-spy-yellow p-6 md:col-span-2">
                             <div className="flex items-center gap-2 mb-6">
                                 <Edit className="w-5 h-5 text-spy-yellow" />
-                                <h2 className="font-orbitron text-lg font-bold text-spy-yellow tracking-wider">
-                                    MANUAL SCORE ENTRY
+                                <h2 className="font-orbitron text-lg font-bold text-spy-yellow tracking-wider uppercase">
+                                    Scores
                                 </h2>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

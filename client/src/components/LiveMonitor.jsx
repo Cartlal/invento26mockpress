@@ -67,28 +67,28 @@ function LiveMonitor({ participants, eventState }) {
                 <div className="bg-dark-panel border border-spy-green/30 p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <Eye className="w-4 h-4 text-spy-green" />
-                        <span className="font-mono-tech text-xs text-gray-400">LIVE UPLINKS</span>
+                        <span className="font-mono-tech text-xs text-gray-400">UPLINKS</span>
                     </div>
                     <div className="font-orbitron text-2xl font-bold text-white">{stats.liveUsers}</div>
                 </div>
                 <div className="bg-dark-panel border border-spy-blue/30 p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <Users className="w-4 h-4 text-spy-blue" />
-                        <span className="font-mono-tech text-xs text-gray-400">TOTAL VOTERS</span>
+                        <span className="font-mono-tech text-xs text-gray-400">VOTERS</span>
                     </div>
                     <div className="font-orbitron text-2xl font-bold text-white">{stats.uniqueVoterCount}</div>
                 </div>
                 <div className="bg-dark-panel border border-spy-red/30 p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <UserCheck className="w-4 h-4 text-spy-red" />
-                        <span className="font-mono-tech text-xs text-gray-400">PARTICIPANTS</span>
+                        <span className="font-mono-tech text-xs text-gray-400">ROSTER</span>
                     </div>
                     <div className="font-orbitron text-2xl font-bold text-white">{stats.participantCount}</div>
                 </div>
                 <div className="bg-dark-panel border border-yellow-500/30 p-4">
                     <div className="flex items-center gap-2 mb-1">
                         <Activity className="w-4 h-4 text-yellow-500" />
-                        <span className="font-mono-tech text-xs text-gray-400">TOTAL INTEL</span>
+                        <span className="font-mono-tech text-xs text-gray-400">VOTES</span>
                     </div>
                     <div className="font-orbitron text-2xl font-bold text-white">{stats.totalVotes}</div>
                 </div>
@@ -102,7 +102,7 @@ function LiveMonitor({ participants, eventState }) {
                         <div className="absolute top-0 right-0 bg-spy-green text-black text-xs font-bold px-2 py-1">
                             LIVE
                         </div>
-                        <h3 className="font-orbitron text-lg font-bold text-spy-green mb-4">CURRENT TARGET</h3>
+                        <h3 className="font-orbitron text-lg font-bold text-spy-green mb-4">ACTIVE</h3>
 
                         {currentParticipant ? (
                             <div className="text-center">
@@ -116,7 +116,7 @@ function LiveMonitor({ participants, eventState }) {
                             </div>
                         ) : (
                             <div className="text-center py-8 text-gray-500 font-mono-tech">
-                                NO ACTIVE TARGET
+                                INACTIVE
                             </div>
                         )}
                     </div>
@@ -125,7 +125,7 @@ function LiveMonitor({ participants, eventState }) {
                     <div className="bg-dark-panel border border-gray-700 p-4">
                         <h3 className="font-orbitron text-sm font-bold text-gray-300 mb-3 flex items-center gap-2">
                             <List className="w-4 h-4" />
-                            NEXT TARGETS (ON DECK)
+                            QUEUE
                         </h3>
                         <div className="space-y-2">
                             {upcomingParticipants.length > 0 ? (
@@ -142,7 +142,7 @@ function LiveMonitor({ participants, eventState }) {
                                     </div>
                                 ))
                             ) : (
-                                <p className="text-center font-mono-tech text-xs text-gray-600 py-4">END OF LINE</p>
+                                <p className="text-center font-mono-tech text-xs text-gray-600 py-4">EMPTY</p>
                             )}
                         </div>
                     </div>
@@ -153,18 +153,18 @@ function LiveMonitor({ participants, eventState }) {
                     <div className="p-4 border-b border-spy-blue/20 flex justify-between items-center">
                         <h3 className="font-orbitron text-lg font-bold text-spy-blue flex items-center gap-2">
                             <Activity className="w-5 h-5" />
-                            ACTIVE AGENTS (VOTERS)
+                            ACTIVITY
                         </h3>
-                        <span className="font-mono-tech text-xs text-spy-blue animate-pulse">● RECEIVING DATA</span>
+                        <span className="font-mono-tech text-xs text-spy-blue animate-pulse">● LIVE</span>
                     </div>
 
                     <div className="flex-grow overflow-y-auto p-4">
                         <table className="w-full text-left font-mono-tech text-sm">
                             <thead className="text-gray-500 border-b border-gray-800">
                                 <tr>
-                                    <th className="pb-2">IP ADDRESS (AGENT)</th>
-                                    <th className="pb-2 text-center">TOTAL VOTES</th>
-                                    <th className="pb-2 text-right">LAST ACTIVE</th>
+                                    <th className="pb-2">ADDRESS</th>
+                                    <th className="pb-2 text-center">VOTES</th>
+                                    <th className="pb-2 text-right">TIME</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800">
@@ -196,7 +196,7 @@ function LiveMonitor({ participants, eventState }) {
                     <div className="bg-dark-panel border-2 border-spy-blue w-full max-w-2xl max-h-[80vh] flex flex-col">
                         <div className="p-6 border-b border-gray-800 flex justify-between items-start">
                             <div>
-                                <h2 className="font-orbitron text-xl font-bold text-white mb-1">AGENT DOSSIER</h2>
+                                <h2 className="font-orbitron text-xl font-bold text-white mb-1">DETAILS</h2>
                                 <p className="font-mono-tech text-spy-blue">IP: {selectedVoter._id}</p>
                             </div>
                             <button
@@ -208,7 +208,7 @@ function LiveMonitor({ participants, eventState }) {
                         </div>
 
                         <div className="flex-grow overflow-y-auto p-6">
-                            <h3 className="font-mono-tech text-xs text-gray-400 mb-4 tracking-widest">TRANSMISSION HISTORY</h3>
+                            <h3 className="font-mono-tech text-xs text-gray-400 mb-4 tracking-widest">HISTORY</h3>
                             <div className="space-y-3">
                                 {voterHistory.map((vote, i) => (
                                     <div key={i} className="flex justify-between items-center bg-gray-900 p-3 border border-gray-800">
