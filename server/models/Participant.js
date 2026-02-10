@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const ParticipantSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    character: { type: String }, // Role/Character being played
     photoUrl: { type: String }, // URL to image
     code: { type: String }, // Optional unique code (e.g. P1)
     orderNumber: { type: Number, required: true }, // Sequence

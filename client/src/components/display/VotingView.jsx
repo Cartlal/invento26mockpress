@@ -1,4 +1,5 @@
 import { Users, TrendingUp } from 'lucide-react';
+import { serverUrl as SERVER_URL } from '../../config';
 
 function VotingView({ participant, liveStats, average }) {
     return (
@@ -16,7 +17,7 @@ function VotingView({ participant, liveStats, average }) {
                             <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-4 border-r-4 border-spy-green"></div>
 
                             <img
-                                src={participant.photoUrl}
+                                src={`${SERVER_URL}${participant.photoUrl}`}
                                 alt={participant.name}
                                 className="w-[450px] h-[450px] object-cover border-2 border-spy-green/30"
                             />

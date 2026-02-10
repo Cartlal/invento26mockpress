@@ -5,10 +5,11 @@ const EventStateSchema = new mongoose.Schema({
     isVotingOpen: { type: Boolean, default: false },
     displayMode: {
         type: String,
-        enum: ['waiting', 'voting_open', 'result', 'leaderboard', 'qr'],
+        enum: ['waiting', 'voting_open', 'result', 'leaderboard', 'qr', 'gallery'],
         default: 'waiting'
     },
     qrCodeUrl: { type: String, default: null },
+    currentGalleryImageId: { type: mongoose.Schema.Types.ObjectId, ref: 'GalleryImage', default: null },
     updatedAt: { type: Date, default: Date.now }
 });
 

@@ -3,9 +3,9 @@ import axios from "axios";
 import { socket } from "../socket";
 import { Trophy, Medal, Award, Download, Users, TrendingUp } from 'lucide-react';
 
-import { apiUrl as API_URL } from "../config";
+import { apiUrl as API_URL, serverUrl as SERVER_URL } from "../config";
 
-function Leaderboard() {
+function Leaderboard({ isDisplay = false }) {
     const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -107,13 +107,15 @@ function Leaderboard() {
                                 </p>
                             </div>
                         </div>
-                        <button
-                            onClick={exportToCSV}
-                            className="flex items-center gap-2 px-6 py-3 bg-spy-blue text-black font-orbitron font-bold text-sm tracking-wider border-2 border-spy-blue hover:bg-transparent hover:text-spy-blue transition-all"
-                        >
-                            <Download size={18} />
-                            EXPORT CSV
-                        </button>
+                        {!isDisplay && (
+                            <button
+                                onClick={exportToCSV}
+                                className="flex items-center gap-2 px-6 py-3 bg-spy-blue text-black font-orbitron font-bold text-sm tracking-wider border-2 border-spy-blue hover:bg-transparent hover:text-spy-blue transition-all"
+                            >
+                                <Download size={18} />
+                                EXPORT CSV
+                            </button>
+                        )}
                     </div>
                 </div>
             </header>
@@ -181,7 +183,7 @@ function Leaderboard() {
                                     <div className="col-span-1">
                                         <div className="w-12 h-12 border border-spy-green/30 bg-black flex items-center justify-center overflow-hidden">
                                             {p.photoUrl ? (
-                                                <img src={p.photoUrl} alt={p.name} className="w-full h-full object-cover" />
+                                                <img src={`${SERVER_URL}${p.photoUrl}`} alt={p.name} className="w-full h-full object-cover" />
                                             ) : (
                                                 <Users className="w-6 h-6 text-gray-700" />
                                             )}

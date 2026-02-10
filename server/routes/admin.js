@@ -4,13 +4,47 @@ const Participant = require('../models/Participant');
 const EventState = require('../models/EventState');
 const AuditLog = require('../models/AuditLog');
 const Vote = require('../models/Vote');
+const redisClient = require('../config/redis');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// --- MULTER CONFIG ---
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = 'uploads/';
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 // --- PARTICIPANT MANAGEMENT ---
 
-// Get all participants
+// Get all participants (with Redis cache)
 router.get('/participants', async (req, res) => {
     try {
+        // Check Redis cache first
+        const cached = await redisClient.get('participants');
+        if (cached) {
+            return res.json(JSON.parse(cached));
+        }
+
+        // If not cached, query DB and cache
         const participants = await Participant.find().sort({ orderNumber: 1 });
+        await redisClient.set('participants', JSON.stringify(participants), {
+            EX: 300 // 5 minutes
+        });
         res.json(participants);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -18,28 +52,57 @@ router.get('/participants', async (req, res) => {
 });
 
 // Add new participant
-router.post('/participant', async (req, res) => {
+router.post('/participant', upload.single('photo'), async (req, res) => {
     try {
-        const { name, photoUrl, orderNumber, code } = req.body;
-        const newParticipant = new Participant({ name, photoUrl, orderNumber, code });
+        const { name, character, orderNumber, code } = req.body;
+        let photoUrl = '';
+
+        if (req.file) {
+            photoUrl = `/uploads/${req.file.filename}`;
+        } else if (req.body.photoUrl) {
+            photoUrl = req.body.photoUrl;
+        }
+
+        const newParticipant = new Participant({ name, character, photoUrl, orderNumber, code });
         await newParticipant.save();
 
         await AuditLog.create({
             action: 'PARTICIPANT_ADDED',
-            details: { name, orderNumber, code },
+            details: { name, character, orderNumber, code },
             ip: req.ip
+        });
+
+        // Cache all participants in Redis for fast access
+        const allParticipants = await Participant.find().sort({ orderNumber: 1 });
+        await redisClient.set('participants', JSON.stringify(allParticipants), {
+            EX: 300 // 5 minutes expiry
         });
 
         res.status(201).json(newParticipant);
     } catch (err) {
+        console.error(err);
         res.status(400).json({ error: err.message });
     }
+});
+
+// Image Upload Route (Standalone)
+router.post('/upload', upload.single('photo'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const photoUrl = `/uploads/${req.file.filename}`;
+    res.json({ photoUrl });
 });
 
 // Update participant status/score (manual override if needed)
 router.put('/participant/:id', async (req, res) => {
     try {
         const updated = await Participant.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+        // Invalidate Cache
+        await redisClient.del('participants');
+        await redisClient.del('leaderboard');
+
         res.json(updated);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -56,6 +119,10 @@ router.delete('/participant/:id', async (req, res) => {
             details: { id: req.params.id, name: p?.name },
             ip: req.ip
         });
+
+        // Invalidate Cache
+        await redisClient.del('participants');
+        await redisClient.del('leaderboard');
 
         res.json({ message: 'Participant deleted' });
     } catch (err) {
@@ -189,17 +256,46 @@ router.get('/voter-history/:ip', async (req, res) => {
     }
 });
 
+// --- USER MANAGEMENT ---
+
+// Get all users (Cached)
+router.get('/users', async (req, res) => {
+    try {
+        const cached = await redisClient.get('admins');
+        if (cached) return res.json(JSON.parse(cached));
+
+        const admins = await require('../models/Admin').find().select('-password');
+        await redisClient.set('admins', JSON.stringify(admins), { EX: 600 }); // 10 mins
+        res.json(admins);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 // --- EVENT CONTROL ---
 
 // Get current event state
+// Get current event state (Cached)
 router.get('/state', async (req, res) => {
     try {
-        let state = await EventState.findOne().populate('currentParticipantId');
+        // Check Redis Cache
+        const cachedState = await redisClient.get('eventState');
+        if (cachedState) {
+            return res.json(JSON.parse(cachedState));
+        }
+
+        let state = await EventState.findOne()
+            .populate('currentParticipantId')
+            .populate('currentGalleryImageId');
         if (!state) {
             state = new EventState();
             await state.save();
+            state = await EventState.findOne().populate('currentParticipantId').populate('currentGalleryImageId');
         }
+
+        // Update Redis with populated state
+        await redisClient.set('eventState', JSON.stringify(state));
         res.json(state);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -207,9 +303,10 @@ router.get('/state', async (req, res) => {
 });
 
 // Update event state (Open/Close Voting, Change Mode, Change Active Participant)
+// Update event state (Open/Close Voting, Change Mode, Change Active Participant)
 router.post('/state', async (req, res) => {
     try {
-        const { currentParticipantId, isVotingOpen, displayMode, qrCodeUrl } = req.body;
+        const { currentParticipantId, isVotingOpen, displayMode, qrCodeUrl, currentGalleryImageId } = req.body;
 
         let state = await EventState.findOne();
         if (!state) state = new EventState();
@@ -218,6 +315,7 @@ router.post('/state', async (req, res) => {
         if (isVotingOpen !== undefined) state.isVotingOpen = isVotingOpen;
         if (displayMode !== undefined) state.displayMode = displayMode;
         if (qrCodeUrl !== undefined) state.qrCodeUrl = qrCodeUrl;
+        if (currentGalleryImageId !== undefined) state.currentGalleryImageId = currentGalleryImageId;
 
         // Automated Final Score Calculation when voting closes
         if (isVotingOpen === false && state.currentParticipantId) {
@@ -236,19 +334,38 @@ router.post('/state', async (req, res) => {
         }
 
         await state.save();
-        const populatedState = await EventState.findOne().populate('currentParticipantId');
+        const populatedState = await EventState.findOne()
+            .populate('currentParticipantId')
+            .populate('currentGalleryImageId');
 
         await AuditLog.create({
             action: 'STATE_UPDATE',
-            details: { isVotingOpen, currentParticipantId, displayMode },
+            details: { isVotingOpen, currentParticipantId, displayMode, currentGalleryImageId },
             ip: req.ip
         });
+
+        // Update Redis Cache
+        await redisClient.set('eventState', JSON.stringify(populatedState));
 
         // Emit socket event for real-time updates (includes populated participant data)
         const io = req.app.get('io');
         io.emit('stateUpdate', populatedState);
 
         res.json(populatedState);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Hard Reset Redis Cache (Emergency Protocol)
+router.post('/redis-reset', async (req, res) => {
+    try {
+        await redisClient.del('participants');
+        await redisClient.del('eventState');
+        await redisClient.del('leaderboard');
+        await redisClient.del('admins');
+        res.json({ message: 'PROTOCOL_CACHE_FLUSHED' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

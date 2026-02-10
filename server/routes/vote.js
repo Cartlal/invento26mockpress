@@ -3,6 +3,7 @@ const router = express.Router();
 const Vote = require('../models/Vote');
 const Participant = require('../models/Participant');
 const EventState = require('../models/EventState');
+const redisClient = require('../config/redis');
 
 // Check if user has already voted
 router.get('/check/:participantId/:deviceHash', async (req, res) => {
@@ -35,12 +36,23 @@ router.post('/', async (req, res) => {
 
 
         // 1. Check if voting is open
-        const state = await EventState.findOne();
+        // 1. Check if voting is open (REDIS OPTIMIZED)
+        const cachedState = await redisClient.get('eventState');
+        let state;
+
+        if (cachedState) {
+            state = JSON.parse(cachedState);
+        } else {
+            state = await EventState.findOne();
+        }
+
         if (!state || !state.isVotingOpen) {
             return res.status(403).json({ error: 'Voting is currently closed.' });
         }
 
-        if (String(state.currentParticipantId) !== participantId) {
+        // Handle populated object vs raw ID from Redis/DB
+        const activeId = state.currentParticipantId._id || state.currentParticipantId;
+        if (String(activeId) !== participantId) {
             return res.status(400).json({ error: 'This participant is not currently active.' });
         }
 
@@ -109,9 +121,12 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get Leaderboard Data (Aggregated)
+// Get Leaderboard Data (Aggregated - Cached)
 router.get('/leaderboard', async (req, res) => {
     try {
+        const cached = await redisClient.get('leaderboard');
+        if (cached) return res.json(JSON.parse(cached));
+
         const leaderboard = await Participant.aggregate([
             {
                 $lookup: {
@@ -140,6 +155,7 @@ router.get('/leaderboard', async (req, res) => {
             { $sort: { avgScore: -1, totalVotes: -1 } }
         ]);
 
+        await redisClient.set('leaderboard', JSON.stringify(leaderboard), { EX: 60 }); // Cache for 1 minute
         res.json(leaderboard);
     } catch (err) {
         console.error(err);

@@ -41,6 +41,10 @@ function Login() {
                 navigate('/admin');
             } else if (res.data.user.role === 'display') {
                 navigate('/display');
+            } else if (res.data.user.role === 'gallery') {
+                navigate('/gallery-control');
+            } else if (res.data.user.role === 'coordinator') {
+                navigate('/add-participant');
             } else {
                 navigate('/display-control');
             }

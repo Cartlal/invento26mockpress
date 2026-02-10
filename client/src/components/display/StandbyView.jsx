@@ -6,13 +6,11 @@ function StandbyView() {
             <div className="flex items-center justify-center gap-20">
                 {/* Left Side: Logo */}
                 <div className="relative flex-shrink-0">
-                    <div className="absolute -inset-10 bg-spy-red opacity-10 blur-3xl animate-pulse"></div>
                     <img
                         src="/assets/Invento-logo.png"
                         alt="INVENTO"
-                        className="w-80 h-80 object-contain floating relative z-10"
+                        className="w-80 h-80 object-contain relative z-10"
                     />
-                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-48 h-2 bg-spy-red/20 blur-xl"></div>
                 </div>
 
                 {/* Right Side: Mission Info */}
@@ -26,16 +24,6 @@ function StandbyView() {
                                 MOCK PRESS CONFERENCE
                             </p>
                         </div>
-                    </div>
-
-                    <div className="flex items-center gap-6 text-spy-green bg-spy-green/5 border border-spy-green/20 p-6 backdrop-blur-sm max-w-xl">
-                        <div className="relative">
-                            <div className="w-5 h-5 bg-spy-green rounded-full pulse-glow"></div>
-                            <div className="absolute inset-0 bg-spy-green rounded-full animate-ping opacity-30"></div>
-                        </div>
-                        <p className="font-mono-tech text-xl tracking-[0.4em] font-bold uppercase">
-                            AWAITING NEXT TARGET...
-                        </p>
                     </div>
                 </div>
             </div>

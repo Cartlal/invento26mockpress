@@ -23,10 +23,13 @@ import {
     Lock,
     Unlock,
     PlusCircle,
-    QrCode
+    QrCode,
+    RefreshCcw,
+    Link as LinkIcon
 } from 'lucide-react';
 
-import { apiUrl as API_URL } from "../config";
+import { apiUrl as API_URL, serverUrl as SERVER_URL } from "../config";
+import GalleryManager from "../components/GalleryManager";
 
 function DisplayControl() {
     const navigate = useNavigate();
@@ -200,6 +203,19 @@ function DisplayControl() {
         }
     };
 
+    const handleRedisReset = async () => {
+        if (!window.confirm("CRITICAL: This will flush all cached data and force a protocol reload. Use only if display is stuck. Proceed?")) return;
+        try {
+            await axios.post(`${API_URL}/admin/redis-reset`);
+            toast.success("PROTOCOL CACHE FLUSHED", {
+                style: { background: '#ff0000', color: '#fff', fontFamily: 'monospace', fontWeight: 'bold' }
+            });
+            window.location.reload();
+        } catch (err) {
+            toast.error("Emergency flush failed");
+        }
+    };
+
     const handleCreateParticipant = async (e) => {
         e.preventDefault();
         if (!addForm.name.trim()) {
@@ -208,20 +224,33 @@ function DisplayControl() {
         }
 
         try {
-            await axios.post(`${API_URL}/admin/participant`, {
-                name: addForm.name,
-                orderNumber: participants.length + 1,
-                code: addForm.code,
-                photoUrl: addForm.photoUrl
+            const formData = new FormData();
+            formData.append('name', addForm.name);
+            formData.append('orderNumber', participants.length + 1);
+            formData.append('code', addForm.code);
+
+            // Check if photoUrl is a data URL (from file reader) or just string
+            // Actually, we need the file object for Multer.
+            // Let's modify handleImageChange to store the file object as well.
+            // But for now, since we only have the dataURL in state, let's fix the state to hold the file.
+            // See next edit for handleImageChange fix.
+            if (addForm.file) {
+                formData.append('photo', addForm.file);
+            }
+
+            await axios.post(`${API_URL}/admin/participant`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
+
             fetchParticipants();
             toast.success("Participant Added", {
                 style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
             });
             setShowAddModal(false);
-            setAddForm({ name: '', code: '', photoUrl: '' });
+            setAddForm({ name: '', code: '', photoUrl: '', file: null });
             setImagePreview(null);
         } catch (e) {
+            console.error(e);
             toast.error("Failed to add participant");
         }
     };
@@ -260,9 +289,9 @@ function DisplayControl() {
             reader.onloadend = () => {
                 setImagePreview(reader.result);
                 if (isEdit) {
-                    setEditForm({ ...editForm, photoUrl: reader.result });
+                    setEditForm({ ...editForm, photoUrl: reader.result, file: file }); // Store file for upload
                 } else {
-                    setAddForm({ ...addForm, photoUrl: reader.result });
+                    setAddForm({ ...addForm, photoUrl: reader.result, file: file }); // Store file for upload
                 }
             };
             reader.readAsDataURL(file);
@@ -271,13 +300,32 @@ function DisplayControl() {
 
     const saveEdit = async () => {
         try {
-            await axios.put(`${API_URL}/admin/participant/${editingParticipant}`, editForm);
+            // Check if we have a new file to upload
+            if (editForm.file) {
+                const formData = new FormData();
+                formData.append('photo', editForm.file);
+                // Upload image first to get URL (since PUT /participant/:id expects JSON usually, or strict multipart)
+                // Let's us the new /upload route for standalone upload then update participant
+                const uploadRes = await axios.post(`${API_URL}/admin/upload`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                editForm.photoUrl = uploadRes.data.photoUrl;
+            }
+
+            await axios.put(`${API_URL}/admin/participant/${editingParticipant}`, {
+                name: editForm.name,
+                code: editForm.code,
+                photoUrl: editForm.photoUrl
+                // orderNumber is handled by drag/drop
+            });
+
             fetchParticipants();
             setEditingParticipant(null);
             toast.success("Participant Updated", {
                 style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
             });
         } catch (e) {
+            console.error(e);
             toast.error("Update Failed");
         }
     };
@@ -385,6 +433,13 @@ function DisplayControl() {
                                 <LogOut size={18} />
                                 LOGOUT
                             </button>
+                            <button
+                                onClick={handleRedisReset}
+                                className="flex items-center gap-2 px-4 py-3 bg-spy-yellow/10 text-spy-yellow font-mono text-xs border border-spy-yellow hover:bg-spy-yellow hover:text-black transition-all"
+                            >
+                                <RefreshCcw size={16} className="animate-spin-slow" />
+                                HARD RESET
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -423,7 +478,7 @@ function DisplayControl() {
                                 <div className="flex items-center gap-8 w-full">
                                     {currentParticipant.photoUrl ? (
                                         <img
-                                            src={currentParticipant.photoUrl}
+                                            src={`${SERVER_URL}${currentParticipant.photoUrl}`}
                                             alt={currentParticipant.name}
                                             className="w-32 h-32 object-cover border-2 border-spy-green/50 flex-shrink-0"
                                         />
@@ -567,6 +622,18 @@ function DisplayControl() {
                                 >
                                     QR CODE
                                 </button>
+                                <button
+                                    onClick={() => setDisplayMode('leaderboard')}
+                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'leaderboard' ? 'bg-spy-purple text-black border-spy-purple' : 'text-spy-purple border-spy-purple/30 hover:bg-spy-purple/10'}`}
+                                >
+                                    LEADERBOARD
+                                </button>
+                                <button
+                                    onClick={() => setDisplayMode('gallery')}
+                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'gallery' ? 'bg-spy-red text-black border-spy-red' : 'text-spy-red border-spy-red/30 hover:bg-spy-red/10'}`}
+                                >
+                                    GALLERY
+                                </button>
                             </div>
                         </div>
 
@@ -597,26 +664,42 @@ function DisplayControl() {
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex-1">
+                            </div>
+
+                            {/* QR From URL */}
+                            <div className="mt-4 pt-4 border-t border-spy-blue/20">
+                                <label className="block font-mono-tech text-[10px] text-spy-blue tracking-widest mb-2 uppercase">
+                                    Generate QR from URL
+                                </label>
+                                <div className="flex gap-2">
                                     <input
-                                        type="file"
-                                        id="qr-upload"
-                                        className="hidden"
-                                        accept="image/*"
-                                        onChange={handleQrUpload}
+                                        type="text"
+                                        id="qr-url-input"
+                                        placeholder="Enter URL to generate QR..."
+                                        className="flex-1 bg-black border border-spy-blue/30 px-3 py-2 font-mono-tech text-xs text-white outline-none focus:border-spy-blue"
                                     />
-                                    <label
-                                        htmlFor="qr-upload"
-                                        className="inline-block px-4 py-2 bg-spy-blue text-black font-orbitron font-bold text-[10px] tracking-wider border border-spy-blue hover:bg-transparent hover:text-spy-blue cursor-pointer transition-all"
+                                    <button
+                                        onClick={async () => {
+                                            const url = document.getElementById('qr-url-input').value;
+                                            if (!url) return toast.error("Enter a URL first");
+                                            const qrGenUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}`;
+                                            try {
+                                                await axios.post(`${API_URL}/admin/state`, { qrCodeUrl: qrGenUrl });
+                                                setQrPreview(qrGenUrl);
+                                                toast.success("QR Generated from URL");
+                                            } catch (err) {
+                                                toast.error("Failed to update QR");
+                                            }
+                                        }}
+                                        className="px-3 py-2 bg-spy-blue/20 text-spy-blue border border-spy-blue hover:bg-spy-blue hover:text-black transition-all"
                                     >
-                                        UPLOAD NEW QR
-                                    </label>
-                                    <p className="font-mono-tech text-[9px] text-gray-400 mt-2 uppercase tracking-tighter">
-                                        Scan access code for voters
-                                    </p>
+                                        <LinkIcon size={14} />
+                                    </button>
                                 </div>
                             </div>
                         </div>
+
+                        {/* Removed Gallery Management */}
                     </div>
                 </div>
 

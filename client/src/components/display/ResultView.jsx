@@ -1,4 +1,5 @@
 import { Lock, Target, Award } from 'lucide-react';
+import { serverUrl as SERVER_URL } from '../../config';
 
 function ResultView({ participant }) {
     return (
@@ -16,7 +17,7 @@ function ResultView({ participant }) {
                             <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-4 border-r-4 border-spy-yellow"></div>
 
                             <img
-                                src={participant.photoUrl}
+                                src={`${SERVER_URL}${participant.photoUrl}`}
                                 alt={participant.name}
                                 className="w-[450px] h-[450px] object-cover border-2 border-spy-yellow/30 shadow-[0_0_50px_rgba(255,204,0,0.15)]"
                             />

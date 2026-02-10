@@ -4,6 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -12,6 +13,8 @@ const server = http.createServer(app);
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+app.use('/uploads', express.static('uploads'));
+app.use('/images_char', express.static(path.join(__dirname, 'images_char')));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/invento26_voting')
@@ -30,7 +33,6 @@ const io = new Server(server, {
 app.set('io', io); // Make io accessible in routes
 
 // Routes
-const path = require('path');
 
 // ... (other imports remain, I need to be careful not to overwrite them if not selected)
 
@@ -38,10 +40,12 @@ const path = require('path');
 const adminRoutes = require('./routes/admin');
 const voteRoutes = require('./routes/vote');
 const authRoutes = require('./routes/auth');
+const galleryRoutes = require('./routes/gallery');
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/vote', voteRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Socket.IO
 io.on('connection', (socket) => {
