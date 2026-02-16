@@ -40,12 +40,12 @@ app.set('io', io); // Make io accessible in routes
 const adminRoutes = require('./routes/admin');
 const voteRoutes = require('./routes/vote');
 const authRoutes = require('./routes/auth');
-const galleryRoutes = require('./routes/gallery');
+
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/vote', voteRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/gallery', galleryRoutes);
+
 
 // Socket.IO
 io.on('connection', (socket) => {

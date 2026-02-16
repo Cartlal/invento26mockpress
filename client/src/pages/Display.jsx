@@ -5,8 +5,8 @@ import StandbyView from "../components/display/StandbyView";
 import VotingView from "../components/display/VotingView";
 import ResultView from "../components/display/ResultView";
 import QRView from "../components/display/QRView";
-import Leaderboard from "./Leaderboard";
-import GalleryStoryView from "../components/display/GalleryStoryView";
+
+
 
 import { apiUrl as API_URL } from "../config";
 
@@ -109,13 +109,9 @@ function Display() {
             return <VotingView participant={participant} liveStats={liveStats} average={average} />;
         }
 
-        if (eventState.displayMode === 'leaderboard') {
-            return <Leaderboard isDisplay={true} />;
-        }
 
-        if (eventState.displayMode === 'gallery') {
-            return <GalleryStoryView eventState={eventState} />;
-        }
+
+
 
         // PRIORITY 2: Dynamic fallback logic based on boolean voting state
         if (eventState.isVotingOpen) {

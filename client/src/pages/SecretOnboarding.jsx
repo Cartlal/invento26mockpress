@@ -142,17 +142,7 @@ function SecretOnboarding() {
                                 DISPLAY
                             </button>
                         </div>
-                        <div className="grid grid-cols-3 gap-2">
-                            <button
-                                type="button"
-                                onClick={() => setRole('gallery')}
-                                className={`py-2 text-xs font-bold font-orbitron border transition-all ${role === 'gallery'
-                                    ? 'bg-spy-green text-black border-spy-green'
-                                    : 'bg-transparent text-gray-500 border-gray-700 hover:border-spy-green'
-                                    }`}
-                            >
-                                GALLERY
-                            </button>
+                        <div className="grid grid-cols-2 gap-2">
                             <button
                                 type="button"
                                 onClick={() => setRole('coordinator')}

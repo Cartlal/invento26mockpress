@@ -101,7 +101,7 @@ router.put('/participant/:id', async (req, res) => {
 
         // Invalidate Cache
         await redisClient.del('participants');
-        await redisClient.del('leaderboard');
+
 
         res.json(updated);
     } catch (err) {
@@ -122,7 +122,7 @@ router.delete('/participant/:id', async (req, res) => {
 
         // Invalidate Cache
         await redisClient.del('participants');
-        await redisClient.del('leaderboard');
+
 
         res.json({ message: 'Participant deleted' });
     } catch (err) {
@@ -306,7 +306,7 @@ router.get('/state', async (req, res) => {
 // Update event state (Open/Close Voting, Change Mode, Change Active Participant)
 router.post('/state', async (req, res) => {
     try {
-        const { currentParticipantId, isVotingOpen, displayMode, qrCodeUrl, currentGalleryImageId } = req.body;
+        const { currentParticipantId, isVotingOpen, displayMode, qrCodeUrl } = req.body;
 
         let state = await EventState.findOne();
         if (!state) state = new EventState();
@@ -315,7 +315,7 @@ router.post('/state', async (req, res) => {
         if (isVotingOpen !== undefined) state.isVotingOpen = isVotingOpen;
         if (displayMode !== undefined) state.displayMode = displayMode;
         if (qrCodeUrl !== undefined) state.qrCodeUrl = qrCodeUrl;
-        if (currentGalleryImageId !== undefined) state.currentGalleryImageId = currentGalleryImageId;
+
 
         // Automated Final Score Calculation when voting closes
         if (isVotingOpen === false && state.currentParticipantId) {
@@ -335,12 +335,11 @@ router.post('/state', async (req, res) => {
 
         await state.save();
         const populatedState = await EventState.findOne()
-            .populate('currentParticipantId')
-            .populate('currentGalleryImageId');
+            .populate('currentParticipantId');
 
         await AuditLog.create({
             action: 'STATE_UPDATE',
-            details: { isVotingOpen, currentParticipantId, displayMode, currentGalleryImageId },
+            details: { isVotingOpen, currentParticipantId, displayMode },
             ip: req.ip
         });
 
@@ -363,7 +362,7 @@ router.post('/redis-reset', async (req, res) => {
     try {
         await redisClient.del('participants');
         await redisClient.del('eventState');
-        await redisClient.del('leaderboard');
+
         await redisClient.del('admins');
         res.json({ message: 'PROTOCOL_CACHE_FLUSHED' });
     } catch (err) {

@@ -121,47 +121,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get Leaderboard Data (Aggregated - Cached)
-router.get('/leaderboard', async (req, res) => {
-    try {
-        const cached = await redisClient.get('leaderboard');
-        if (cached) return res.json(JSON.parse(cached));
 
-        const leaderboard = await Participant.aggregate([
-            {
-                $lookup: {
-                    from: 'votes',
-                    localField: '_id',
-                    foreignField: 'participantId',
-                    as: 'votes'
-                }
-            },
-            {
-                $project: {
-                    name: 1,
-                    photoUrl: 1,
-                    code: 1,
-                    orderNumber: 1,
-                    totalVotes: { $size: "$votes" },
-                    avgScore: {
-                        $cond: [
-                            { $gt: [{ $size: "$votes" }, 0] },
-                            { $avg: "$votes.score" },
-                            0
-                        ]
-                    }
-                }
-            },
-            { $sort: { avgScore: -1, totalVotes: -1 } }
-        ]);
-
-        await redisClient.set('leaderboard', JSON.stringify(leaderboard), { EX: 60 }); // Cache for 1 minute
-        res.json(leaderboard);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch leaderboard' });
-    }
-});
 
 module.exports = router;
 

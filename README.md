@@ -3,16 +3,13 @@
 **Codename**: Project Spyglass 2.0  
 **Status**: ![Production Ready](https://img.shields.io/badge/Status-Deployed-success) ![Redis](https://img.shields.io/badge/Caching-Full-blue) ![Aesthetics](https://img.shields.io/badge/Aesthetics-Premium-red)
 
-A premium, high-stakes real-time voting and cinematic display system engineered for the **Invento 2026 Mock Press** event. This system handles live audience evaluation, dynamic character galleries, and ultra-responsive projector displays with a heavy "Cyber-Spy" aesthetic.
+A premium, high-stakes real-time voting and cinematic display system engineered for the **Invento 2026 Mock Press** event. This system handles live audience evaluation and ultra-responsive projector displays with a heavy "Cyber-Spy" aesthetic.
 
 ---
 
 ## 🌟 Key Features
 
-### 🖼️ Cinematic Character Gallery
-*   **Interrogation Photos**: High-resolution gallery for each participant (up to 20MB/image).
-*   **Dynamic Carousel**: Fluid transitions between character shots on the main display.
-*   **Gallery Controller**: Dedicated dashboard to navigate images (Next/Prev) for the active participant in real-time.
+
 
 ### 🗳️ Secure Voting Interface
 *   **Agent Identity Protocol**: Voters authenticate via **Codename** and **Phone Number**.
@@ -20,7 +17,7 @@ A premium, high-stakes real-time voting and cinematic display system engineered 
 *   **Live Average Score**: Real-time score aggregation shown on the main display upon result reveal.
 
 ### 🖥️ Display Control Center (The HUD)
-*   **Director Mode**: Central hub for toggling Voting, Results, Gallery, or Standby modes.
+*   **Director Mode**: Central hub for toggling Voting, Results, or Standby modes.
 *   **Live Preview**: Real-time "Monitor" view of exactly what the audience is seeing.
 *   **Hard Reset Protocol**: One-click emergency flush button to clear memory/cache if the system hangs.
 
@@ -82,7 +79,7 @@ invento26mockpress/
 ├── server/            # Node.js API & Socket Server
 │   ├── images_char/   # Character & Gallery Image Assets (Bundled)
 │   ├── config/        # Database & Redis connectors
-│   ├── routes/        # Mission logic (Admin, Vote, Gallery, Auth)
+│   ├── routes/        # Mission logic (Admin, Vote, Auth)
 │   ├── uploads/       # Dynamic participant photo directory
 │   └── index.js       # Core Surveillance Hub
 ├── render.yaml        # Automated Deployment Blueprint

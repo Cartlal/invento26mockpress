@@ -263,12 +263,7 @@ function Admin() {
                         <Gamepad2 size={14} /> CONTROL
                     </button>
 
-                    <button
-                        onClick={() => navigate('/gallery-control')}
-                        className="w-full flex items-center gap-3 px-4 py-2 bg-gray-900/50 text-gray-400 font-orbitron font-bold text-[10px] tracking-wider border border-gray-800 hover:border-spy-red hover:text-spy-red transition-all"
-                    >
-                        <ImageIcon size={14} /> GALLERY
-                    </button>
+
 
                     <button
                         onClick={() => navigate('/add-participant')}
@@ -484,8 +479,8 @@ function Admin() {
                                     { id: 'voting_open', icon: <PlayCircle size={14} />, label: 'VOTING' },
                                     { id: 'result', icon: <Shield size={14} />, label: 'RESULT' },
                                     { id: 'qr', icon: <QrCode size={14} />, label: 'QR_CODE' },
-                                    { id: 'leaderboard', icon: <Trophy size={14} />, label: 'RANKINGS' },
-                                    { id: 'gallery', icon: <Tv size={14} />, label: 'GALLERY' }
+
+
                                 ].map(mode => (
                                     <button
                                         key={mode.id}

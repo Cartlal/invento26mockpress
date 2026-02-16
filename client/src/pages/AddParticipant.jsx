@@ -26,10 +26,7 @@ function AddParticipant() {
     const [preview, setPreview] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Gallery Images
-    const [galleryImages, setGalleryImages] = useState([]); // Array of {file: File, url: string, caption: string}
-    const [galleryUrl, setGalleryUrl] = useState("");
-    const [galleryCaption, setGalleryCaption] = useState("");
+
 
     // Participants List
     const [participants, setParticipants] = useState([]);
@@ -86,28 +83,9 @@ function AddParticipant() {
 
             const newParticipantId = res.data._id;
 
-            // Upload gallery images if any
-            for (const galleryImage of galleryImages) {
-                if (galleryImage.file) {
-                    // Upload file
-                    const galleryFormData = new FormData();
-                    galleryFormData.append("image", galleryImage.file);
-                    galleryFormData.append("participantId", newParticipantId);
-                    galleryFormData.append("caption", galleryImage.caption || "");
-                    await axios.post(`${API_URL}/gallery/upload`, galleryFormData, {
-                        headers: { "Content-Type": "multipart/form-data" },
-                    });
-                } else if (galleryImage.url) {
-                    // Add URL
-                    await axios.post(`${API_URL}/gallery/add-url`, {
-                        participantId: newParticipantId,
-                        imageUrl: galleryImage.url,
-                        caption: galleryImage.caption || ""
-                    });
-                }
-            }
 
-            toast.success(`Participant Added with ${galleryImages.length} gallery image(s)!`);
+
+            toast.success(`Participant Added!`);
 
             // Reset form
             setName("");
@@ -115,9 +93,7 @@ function AddParticipant() {
             setCode("");
             setPhoto(null);
             setPreview(null);
-            setGalleryImages([]);
-            setGalleryUrl("");
-            setGalleryCaption("");
+
 
             // Refresh list
             fetchParticipants();
@@ -160,36 +136,7 @@ function AddParticipant() {
         }
     };
 
-    const handleAddGalleryFile = (e) => {
-        const files = Array.from(e.target.files);
-        const newImages = files.map(file => ({
-            file,
-            url: null,
-            caption: galleryCaption,
-            preview: URL.createObjectURL(file)
-        }));
-        setGalleryImages([...galleryImages, ...newImages]);
-        setGalleryCaption("");
-    };
 
-    const handleAddGalleryUrl = () => {
-        if (!galleryUrl.trim()) {
-            toast.error("Enter a URL");
-            return;
-        }
-        setGalleryImages([...galleryImages, {
-            file: null,
-            url: galleryUrl,
-            caption: galleryCaption,
-            preview: galleryUrl
-        }]);
-        setGalleryUrl("");
-        setGalleryCaption("");
-    };
-
-    const removeGalleryImage = (index) => {
-        setGalleryImages(galleryImages.filter((_, i) => i !== index));
-    };
 
     const stats = {
         total: participants.length,
@@ -341,77 +288,7 @@ function AddParticipant() {
                                     />
                                 </div>
 
-                                {/* Gallery Images */}
-                                <div className="border-t pt-4 mt-4">
-                                    <label className="text-sm font-bold text-gray-700 mb-2 block">
-                                        Gallery Images (Optional)
-                                    </label>
 
-                                    {/* Caption Input */}
-                                    <input
-                                        type="text"
-                                        value={galleryCaption}
-                                        onChange={(e) => setGalleryCaption(e.target.value)}
-                                        placeholder="Image caption (optional)"
-                                        className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                    />
-
-                                    {/* Upload File */}
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleAddGalleryFile}
-                                        className="hidden"
-                                        id="gallery-file-upload"
-                                    />
-                                    <label
-                                        htmlFor="gallery-file-upload"
-                                        className="block w-full px-3 py-2 mb-2 bg-gray-100 text-gray-700 rounded-md cursor-pointer hover:bg-gray-200 text-sm font-medium text-center"
-                                    >
-                                        + Upload Gallery Images
-                                    </label>
-
-                                    {/* Add URL */}
-                                    <div className="flex gap-2 mb-2">
-                                        <input
-                                            type="url"
-                                            value={galleryUrl}
-                                            onChange={(e) => setGalleryUrl(e.target.value)}
-                                            placeholder="Or paste image URL..."
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={handleAddGalleryUrl}
-                                            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm font-medium"
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
-
-                                    {/* Preview Gallery Images */}
-                                    {galleryImages.length > 0 && (
-                                        <div className="mt-3 space-y-2 max-h-40 overflow-y-auto">
-                                            {galleryImages.map((img, idx) => (
-                                                <div key={idx} className="flex items-center gap-2 p-2 bg-gray-50 rounded border">
-                                                    <img src={img.preview} alt={`Gallery ${idx + 1}`} className="w-12 h-12 object-cover rounded" />
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-xs text-gray-600 truncate">{img.caption || `Image ${idx + 1}`}</p>
-                                                        <p className="text-[10px] text-gray-400">{img.file ? 'File' : 'URL'}</p>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removeGalleryImage(idx)}
-                                                        className="text-red-500 hover:text-red-700"
-                                                    >
-                                                        <X size={16} />
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
 
                                 {/* Submit */}
                                 <button

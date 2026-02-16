@@ -7,8 +7,8 @@ The Invento 2026 Mock Press Protocol is now fully optimized, secured, and ready 
 
 ### ✅ Completed Milestones
 1. **Redis Caching Protocol**: Implemented full caching for state, participants, and leaderboard. Latency reduced by ~80% for frequent display polls.
-2. **Unified Display Hub**: The central display system now handles all event modes (Standby, QR, Voting, Gallery, Results) with seamless real-time transitions.
-3. **Advanced Control HUD**: The admin dashboard now features a live preview monitor, hard-reset capabilities, and per-character gallery navigation.
+2. **Unified Display Hub**: The central display system now handles all event modes (Standby, QR, Voting, Results) with seamless real-time transitions.
+3. **Advanced Control HUD**: The admin dashboard now features a live preview monitor, hard-reset capabilities, and real-time state management.
 4. **Security Clearance**: Multi-layer voting verification (IP + Device Hash + ID) is active and tested.
 5. **Asset Hardening**: All images have been consolidated into the project directory with relative pathing for cloud deployment.
 

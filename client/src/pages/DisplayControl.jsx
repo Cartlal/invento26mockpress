@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 import { apiUrl as API_URL, serverUrl as SERVER_URL } from "../config";
-import GalleryManager from "../components/GalleryManager";
+
 
 function DisplayControl() {
     const navigate = useNavigate();
@@ -405,13 +405,7 @@ function DisplayControl() {
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <button
-                                onClick={() => window.open('/leaderboard', '_blank')}
-                                className="flex items-center gap-2 px-6 py-3 bg-spy-yellow text-black font-orbitron font-bold text-sm tracking-wider border-2 border-spy-yellow hover:bg-transparent hover:text-spy-yellow transition-all"
-                            >
-                                <Trophy size={18} />
-                                LEADERBOARD
-                            </button>
+
                             <button
                                 onClick={() => window.open('/qr-code', '_blank')}
                                 className="flex items-center gap-2 px-6 py-3 bg-spy-green text-black font-orbitron font-bold text-sm tracking-wider border-2 border-spy-green hover:bg-transparent hover:text-spy-green transition-all"
@@ -597,7 +591,7 @@ function DisplayControl() {
                         {/* Display Mode Controls */}
                         <div className="mt-6 bg-black/40 p-4 border border-spy-green/10">
                             <span className="font-mono-tech text-[10px] text-gray-500 tracking-widest block mb-3 uppercase">PROJECTOR VIEW MODE</span>
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="grid grid-cols-4 gap-2">
                                 <button
                                     onClick={() => setDisplayMode('waiting')}
                                     className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'waiting' ? 'bg-spy-green text-black border-spy-green' : 'text-spy-green border-spy-green/30 hover:bg-spy-green/10'}`}
@@ -622,18 +616,7 @@ function DisplayControl() {
                                 >
                                     QR CODE
                                 </button>
-                                <button
-                                    onClick={() => setDisplayMode('leaderboard')}
-                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'leaderboard' ? 'bg-spy-purple text-black border-spy-purple' : 'text-spy-purple border-spy-purple/30 hover:bg-spy-purple/10'}`}
-                                >
-                                    LEADERBOARD
-                                </button>
-                                <button
-                                    onClick={() => setDisplayMode('gallery')}
-                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'gallery' ? 'bg-spy-red text-black border-spy-red' : 'text-spy-red border-spy-red/30 hover:bg-spy-red/10'}`}
-                                >
-                                    GALLERY
-                                </button>
+
                             </div>
                         </div>
 
@@ -699,7 +682,7 @@ function DisplayControl() {
                             </div>
                         </div>
 
-                        {/* Removed Gallery Management */}
+
                     </div>
                 </div>
 

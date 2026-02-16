@@ -7,7 +7,7 @@ This document outlines the systematic plan to enhance the voting application wit
 - [x] **State Caching**: Implement Redis caching for the `GET /state` route to reduce MongoDB load on frequent display polls.
 - [x] **Participant List Caching**: Cache the full list of participants for the admin and voting screens.
 - [x] **Leaderboard Optimization**: Cache the aggregated leaderboard results with a short TTL (e.g., 60s) to handle high traffic during results reveal.
-- [x] **Gallery Caching**: Implement per-participant gallery image caching to ensure smooth image transitions on the projector.
+
 - [x] **Cache Invalidation Protocol**: Ensure cache keys are deleted/updated when data changes (e.g., state updates, participant edits, new votes).
 
 ## Phase 2: Display & UI Refinement
@@ -16,10 +16,7 @@ This document outlines the systematic plan to enhance the voting application wit
 - [x] **Image Path Normalization**: Ensure all images (local and URL-based) use a consistent `SERVER_URL` prefix for reliable loading on all devices.
 - [x] **QR Code Mode**: Redesign the QR view to match the "Spyverse" aesthetic (Red theme, static layout, inverted QR).
 
-## Phase 3: Gallery Navigation & Control
-- [x] **Gallery Manager**: Implement a dedicated component for admins to upload and manage character-specific gallery images.
-- [x] **Navigation Controller**: Add "Next/Previous" and "First/Last" controls to the Gallery Controller for precise stage management.
-- [x] **Projector Sync**: Ensure the main display's gallery view follows the admin's navigation commands instantly via WebSockets.
+
 
 ## Phase 4: Production Readiness
 - [x] **Asset Consolidation**: Move hardcoded external assets into the project structure for self-contained deployment.

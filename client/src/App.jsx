@@ -5,14 +5,12 @@ import Admin from "./pages/Admin";
 import Display from "./pages/Display";
 import Logs from "./pages/Logs";
 import DisplayControl from "./pages/DisplayControl";
-import Leaderboard from "./pages/Leaderboard";
+
 import Login from "./pages/Login";
 import SecretOnboarding from "./pages/SecretOnboarding";
 import ProtectedRoute from "./components/ProtectedRoute";
 import QRCodePage from "./pages/QRCodePage";
-import GalleryView from "./pages/GalleryView";
 import AddParticipant from "./pages/AddParticipant";
-import GalleryController from "./pages/GalleryController";
 
 function App() {
   return (
@@ -36,7 +34,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/leaderboard" element={<Leaderboard />} />
+
           <Route path="/qr-code" element={<QRCodePage />} />
           <Route
             path="/admin"
@@ -54,14 +52,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/gallery-control"
-            element={
-              <ProtectedRoute allowedRoles={['gallery', 'admin', 'coordinator']}>
-                <GalleryController />
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/add-participant"
             element={
