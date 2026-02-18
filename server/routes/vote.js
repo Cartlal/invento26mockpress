@@ -10,16 +10,9 @@ router.get('/check/:participantId/:deviceHash', async (req, res) => {
     try {
         const { participantId, deviceHash } = req.params;
         const ipAddress = req.ip;
-        const isLocalhost = ipAddress === '::1' || ipAddress === '127.0.0.1' || ipAddress === '1';
-
-        let checkConditions = [{ deviceHash }];
-        if (!isLocalhost) {
-            checkConditions.push({ ipAddress });
-        }
-
         const existingVote = await Vote.findOne({
             participantId,
-            $or: checkConditions
+            $or: [{ deviceHash }, { ipAddress }]
         });
 
         res.json({ voted: !!existingVote });
@@ -63,22 +56,9 @@ router.post('/', async (req, res) => {
         // 2. Double-vote Prevention
         // Check if this IP or Device Hash has already voted for this participant
 
-        const isLocalhost = ipAddress === '::1' || ipAddress === '127.0.0.1' || ipAddress === '1';
-
-        // Build query to check for existing votes
-        let checkConditions = [
-            { deviceHash }
-        ];
-
-        // Only check IP if NOT localhost (allows multiple testers on same machine/wifi if needed, or strictly enforces on prod)
-        // If the user specifically requested "allow if ip is 1", they likely want to test multiple users from localhost.
-        if (!isLocalhost) {
-            checkConditions.push({ ipAddress });
-        }
-
         const existingVote = await Vote.findOne({
             participantId,
-            $or: checkConditions
+            $or: [{ deviceHash }, { ipAddress }]
         });
 
         if (existingVote) {

@@ -16,26 +16,7 @@ function Voting() {
     const [voterPhone, setVoterPhone] = useState("");
     const [isNameless, setIsNameless] = useState(true);
 
-    useEffect(() => {
-        // No longer requiring stored identity
-        setIsNameless(false);
-    }, []);
 
-    const handleNameSubmit = (e) => {
-        e.preventDefault();
-        if (!voterName.trim()) return;
-        if (!voterPhone.trim() || voterPhone.length < 10) {
-            toast.error("INVALID PHONE NUMBER");
-            return;
-        }
-
-        localStorage.setItem("voterName", voterName.trim());
-        localStorage.setItem("voterPhone", voterPhone.trim());
-        setIsNameless(false);
-        toast.success(`IDENTITY CONFIRMED`, {
-            style: { background: '#00ff41', color: '#000', fontFamily: 'monospace' }
-        });
-    };
 
     const fetchParticipant = async (id) => {
         try {
@@ -236,6 +217,8 @@ function Voting() {
             </div>
         );
     }
+
+
 
     // VOTING ACTIVE STATE
     return (
