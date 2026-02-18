@@ -697,14 +697,11 @@ function DisplayControl() {
                                 </h2>
                             </div>
                             <button
-                                onClick={() => {
-                                    setShowAddModal(true);
-                                    setImagePreview(null);
-                                }}
+                                onClick={() => navigate('/add-participant')}
                                 className="flex items-center gap-1 px-3 py-1 bg-spy-green text-black font-orbitron font-bold text-[10px] tracking-wider border border-spy-green hover:bg-transparent hover:text-spy-green transition-all"
                             >
                                 <PlusCircle size={14} />
-                                ADD AGENT
+                                ADD PARTICIPANT
                             </button>
                         </div>
                         <p className="font-mono-tech text-xs text-gray-500 mb-4">

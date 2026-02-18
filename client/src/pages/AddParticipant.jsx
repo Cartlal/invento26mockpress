@@ -253,7 +253,7 @@ function AddParticipant() {
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
                                         placeholder="Full name"
                                         required
                                     />
@@ -269,7 +269,7 @@ function AddParticipant() {
                                         type="text"
                                         value={character}
                                         onChange={(e) => setCharacter(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
                                         placeholder="e.g., James Bond"
                                     />
                                 </div>
@@ -283,7 +283,7 @@ function AddParticipant() {
                                         type="text"
                                         value={code}
                                         onChange={(e) => setCode(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
                                         placeholder="e.g., P1"
                                     />
                                 </div>
