@@ -117,7 +117,7 @@ function Developers() {
             {/* ArcStack Integration */}
             <div className="relative z-10 w-full max-w-2xl flex flex-col items-center mt-12 mb-12 animate-in fade-in duration-700 delay-300">
                 <div className="bg-black/60 border border-gray-800 hud-corners p-8 backdrop-blur-md w-full flex flex-col items-center text-center transition-transform hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
-                    <img src="https://arcstack.netlify.app/arcstack_logo.png" alt="ArcStack Logo" className="w-24 h-auto mb-4 grayscale hover:grayscale-0 transition-all duration-500" />
+                    <img src="https://arcstack.netlify.app/arcstack_logo.png" alt="ArcStack Logo" className="w-24 h-auto mb-4 transition-all duration-500" />
                     <h2 className="font-orbitron font-bold text-xl tracking-widest text-white mb-2 uppercase">
                         POWERED BY <span className="text-blue-400">ARCSTACK</span>
                     </h2>
