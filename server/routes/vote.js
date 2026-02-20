@@ -12,7 +12,7 @@ router.get('/check/:participantId/:deviceHash', async (req, res) => {
         const ipAddress = req.ip;
         const existingVote = await Vote.findOne({
             participantId,
-            $or: [{ deviceHash }, { ipAddress }]
+            deviceHash
         });
 
         res.json({ voted: !!existingVote });
@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
 
         const existingVote = await Vote.findOne({
             participantId,
-            $or: [{ deviceHash }, { ipAddress }]
+            deviceHash
         });
 
         if (existingVote) {

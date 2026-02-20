@@ -96,18 +96,23 @@ function Voting() {
 
             // Show success confirmation
             toast.success(
-                `✅ VOTE CONFIRMED!\nScore: ${selectedScore}/10\nAgent: ${voterName}`,
+                `VOTE CONFIRMED! \nScore: ${selectedScore}/10${voterName ? `\nAgent: ${voterName}` : ''}`,
                 {
                     duration: 5000,
                     style: {
-                        background: '#00ff41',
-                        color: '#000',
-                        fontFamily: 'monospace',
+                        background: '#0a0a0a',
+                        color: '#00ff41',
+                        fontFamily: '"Rajdhani", monospace',
                         fontWeight: 'bold',
-                        fontSize: '14px',
-                        padding: '20px',
-                        borderRadius: '0',
-                        border: '2px solid #00ff41'
+                        fontSize: '16px',
+                        padding: '16px 20px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(0, 255, 65, 0.4)',
+                        boxShadow: '0 0 20px rgba(0, 255, 65, 0.2)'
+                    },
+                    iconTheme: {
+                        primary: '#00ff41',
+                        secondary: '#0a0a0a',
                     }
                 }
             );
@@ -202,17 +207,7 @@ function Voting() {
                         </p>
                     </div>
 
-                    {/* Next Target Info */}
-                    {participant && (
-                        <div className="bg-black/60 border border-dark-border p-4 backdrop-blur-sm">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                <span className="font-mono-tech text-xs text-yellow-500 tracking-wider">NEXT PARTICIPANT</span>
-                            </div>
-                            <p className="font-rajdhani text-lg font-semibold text-white">{participant.name}</p>
 
-                        </div>
-                    )}
                 </div>
             </div>
         );
@@ -237,25 +232,7 @@ function Voting() {
                     </div>
                 </div>
 
-                {/* Participant Profile */}
-                {participant && (
-                    <div className="text-center">
-                        <div className="relative inline-block mb-3">
-                            <div className="relative w-36 h-36 mx-auto border-2 border-spy-green p-1 group overflow-hidden shadow-[0_0_30px_rgba(0,255,65,0.15)]">
-                                {participant.photoUrl ? (
-                                    <img src={participant.photoUrl} alt={participant.name} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-dark-panel">
-                                        <Target className="w-10 h-10 text-spy-green opacity-30" />
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <h2 className="font-orbitron text-2xl font-black text-white tracking-wider uppercase drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-                            {participant.name}
-                        </h2>
-                    </div>
-                )}
+
 
                 {/* Voting Interface */}
                 {hasVoted ? (
@@ -270,47 +247,30 @@ function Voting() {
                     </div>
                 ) : (
                     <div className="w-full space-y-6">
-                        {/* Score Display */}
-                        <div className="bg-black/80 border border-spy-green/30 py-6 text-center backdrop-blur-sm shadow-[inset_0_0_20px_rgba(0,255,65,0.05)]">
-                            <div className={`font-orbitron text-6xl font-black mb-1 ${getScoreColor(selectedScore)}`}>
-                                {selectedScore}
-                            </div>
-                            <div className="font-mono-tech text-[12px] text-gray-400 tracking-widest font-bold">
-                                {getScoreLabel(selectedScore)}
-                            </div>
-                        </div>
 
-                        {/* Slider with Pin */}
+                        {/* Score Buttons */}
                         <div className="px-2">
-                            <div className="relative py-6">
-                                <div
-                                    className="absolute top-1/2 -translate-y-1/2 w-full h-3 rounded-full pointer-events-none"
-                                    style={{ background: 'linear-gradient(to right, #ff0000 0%, #ffcc00 50%, #00ff41 100%)' }}
-                                ></div>
-                                <img
-                                    src="/assets/pin.png"
-                                    alt="Pin"
-                                    className="absolute w-8 h-8 pointer-events-none z-10 transition-all duration-75"
-                                    style={{
-                                        left: `${((selectedScore - 1) / 9) * 100}%`,
-                                        top: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        filter: 'drop-shadow(0 0 10px rgba(0, 255, 65, 0.4))'
-                                    }}
-                                />
-                                <input
-                                    type="range"
-                                    min="1"
-                                    max="10"
-                                    value={selectedScore}
-                                    onChange={(e) => setSelectedScore(parseInt(e.target.value))}
-                                    className="absolute top-1/2 -translate-y-1/2 w-full h-12 opacity-0 cursor-pointer z-20"
-                                />
+                            <div className="grid grid-cols-5 gap-3 py-4">
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setSelectedScore(num)}
+                                        className={`
+                                            h-12 rounded-lg font-orbitron font-bold text-lg transition-all duration-200 flex items-center justify-center active:scale-95
+                                            ${selectedScore === num
+                                                ? 'bg-spy-green text-black scale-110 shadow-[0_0_15px_rgba(0,255,65,0.6)] border-2 border-spy-green z-10'
+                                                : 'bg-black text-gray-300 border border-gray-700 hover:border-spy-green/50 opacity-90'
+                                            }
+                                        `}
+                                    >
+                                        {num}
+                                    </button>
+                                ))}
                             </div>
-                            <div className="flex justify-between font-mono-tech text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-                                <span>POOR</span>
-                                <span>AVERAGE</span>
-                                <span>EXCELLENT</span>
+                            <div className="flex justify-between font-mono-tech text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-2">
+                                <span>POOR (1-3)</span>
+                                <span>AVERAGE (4-7)</span>
+                                <span>EXCELLENT (8-10)</span>
                             </div>
                         </div>
 

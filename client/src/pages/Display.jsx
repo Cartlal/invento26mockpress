@@ -106,7 +106,7 @@ function Display() {
         }
 
         if (eventState.displayMode === 'voting_open') {
-            return <VotingView participant={participant} liveStats={liveStats} average={average} />;
+            return <QRView qrCodeUrl={eventState.qrCodeUrl} />;
         }
 
 
@@ -115,7 +115,7 @@ function Display() {
 
         // PRIORITY 2: Dynamic fallback logic based on boolean voting state
         if (eventState.isVotingOpen) {
-            return <VotingView participant={participant} liveStats={liveStats} average={average} />;
+            return <QRView qrCodeUrl={eventState.qrCodeUrl} />;
         }
 
         // PRIORITY 3: If voting is closed, show result if completed, else show standby
@@ -162,7 +162,7 @@ function Display() {
             {/* Footer Ticker */}
             <div className="absolute bottom-0 left-0 right-0 bg-spy-red border-t-4 border-spy-yellow py-3 overflow-hidden z-20">
                 <div className="whitespace-nowrap animate-marquee font-mono-tech text-lg font-bold text-black tracking-wider uppercase">
-                    +++ BREAKING: MOCK PRESS CONFERENCE IN PROGRESS +++ TARGET IDENTIFIED: {participant?.name || "NONE"} +++ LIVE VOTING PROTOCOL ENGAGED +++ SYSTEM AUTHENTICATED +++ INVENTO 2026 +++ MISSION STATUS: ACTIVE +++
+                    +++ BREAKING: MOCK PRESS CONFERENCE IN PROGRESS +++ TARGET IDENTIFIED +++ LIVE VOTING PROTOCOL ENGAGED +++ SYSTEM AUTHENTICATED +++ INVENTO 2026 +++ MISSION STATUS: ACTIVE +++
                 </div>
             </div>
 

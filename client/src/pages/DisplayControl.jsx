@@ -591,7 +591,7 @@ function DisplayControl() {
                         {/* Display Mode Controls */}
                         <div className="mt-6 bg-black/40 p-4 border border-spy-green/10">
                             <span className="font-mono-tech text-[10px] text-gray-500 tracking-widest block mb-3 uppercase">PROJECTOR VIEW MODE</span>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid grid-cols-3 gap-2">
                                 <button
                                     onClick={() => setDisplayMode('waiting')}
                                     className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'waiting' ? 'bg-spy-green text-black border-spy-green' : 'text-spy-green border-spy-green/30 hover:bg-spy-green/10'}`}
@@ -610,13 +610,6 @@ function DisplayControl() {
                                 >
                                     RESULT
                                 </button>
-                                <button
-                                    onClick={() => setDisplayMode('qr')}
-                                    className={`py-2 font-mono-tech text-xs border transition-all ${eventState.displayMode === 'qr' ? 'bg-spy-blue text-black border-spy-blue' : 'text-spy-blue border-spy-blue/30 hover:bg-spy-blue/10'}`}
-                                >
-                                    QR CODE
-                                </button>
-
                             </div>
                         </div>
 
