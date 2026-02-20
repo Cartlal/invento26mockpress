@@ -11,6 +11,7 @@ import SecretOnboarding from "./pages/SecretOnboarding";
 import ProtectedRoute from "./components/ProtectedRoute";
 import QRCodePage from "./pages/QRCodePage";
 import AddParticipant from "./pages/AddParticipant";
+import Developers from "./pages/Developers";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/developers" element={<Developers />} />
         </Routes>
       </div>
     </Router>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { socket } from "../socket";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Lock, Target, CheckCircle, Gauge } from 'lucide-react';
+import { Lock, Target, CheckCircle, Gauge, Code, Users } from 'lucide-react';
 
 import { apiUrl as API_URL } from "../config";
 
@@ -57,6 +58,11 @@ function Voting() {
             socket.off("stateUpdate");
         };
     }, [participant]);
+
+    // Update document title
+    useEffect(() => {
+        document.title = "invento voting";
+    }, []);
 
     // Check if already voted on mount or participant change
     useEffect(() => {
@@ -171,6 +177,18 @@ function Voting() {
                     <div className="w-16 h-16 border-4 border-spy-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="font-mono-tech text-spy-green text-sm tracking-widest">INITIALIZING SECURE CONNECTION...</p>
                 </div>
+
+                {/* Fixed Developers Button */}
+                <div className="fixed bottom-8 left-0 w-full flex justify-center z-50 pointer-events-none px-4">
+                    <Link to="/developers" className="pointer-events-auto group relative inline-flex items-center justify-center px-8 py-3.5 font-orbitron font-bold text-xs md:text-sm tracking-[0.2em] text-white transition-all duration-500 hover:scale-110 hover:-translate-y-1">
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-900 transform -skew-x-[15deg] transition-all duration-500 shadow-[0_0_20px_rgba(220,38,38,0.5)] group-hover:shadow-[0_0_40px_rgba(220,38,38,0.8)] border-t border-b border-red-500/50"></div>
+                        <div className="absolute inset-0 bg-[url('/assets/grid.svg')] opacity-20 mix-blend-overlay transform -skew-x-[15deg]"></div>
+                        <span className="relative flex items-center gap-3 drop-shadow-md">
+                            <Code className="w-5 h-5 text-red-200 group-hover:text-white group-hover:animate-pulse" />
+                            MEET THE DEVELOPERS
+                        </span>
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -209,6 +227,18 @@ function Voting() {
 
 
                 </div>
+
+                {/* Fixed Developers Button */}
+                <div className="fixed bottom-8 left-0 w-full flex justify-center z-50 pointer-events-none px-4">
+                    <Link to="/developers" className="pointer-events-auto group relative inline-flex items-center justify-center px-8 py-3.5 font-orbitron font-bold text-xs md:text-sm tracking-[0.2em] text-white transition-all duration-500 hover:scale-110 hover:-translate-y-1">
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-900 transform -skew-x-[15deg] transition-all duration-500 shadow-[0_0_20px_rgba(220,38,38,0.5)] group-hover:shadow-[0_0_40px_rgba(220,38,38,0.8)] border-t border-b border-red-500/50"></div>
+                        <div className="absolute inset-0 bg-[url('/assets/grid.svg')] opacity-20 mix-blend-overlay transform -skew-x-[15deg]"></div>
+                        <span className="relative flex items-center gap-3 drop-shadow-md">
+                            <Code className="w-5 h-5 text-red-200 group-hover:text-white group-hover:animate-pulse" />
+                            MEET THE DEVELOPERS
+                        </span>
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -224,11 +254,21 @@ function Voting() {
             {/* Content Wrapper */}
             <div className="relative z-10 w-full max-w-md h-full flex flex-col justify-center gap-6 py-4">
                 {/* Header: Logo & Status */}
-                <div className="text-center space-y-3">
-                    <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-28 h-28 mx-auto" />
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-spy-green/10 border border-spy-green/50 rounded-full">
-                        <div className="w-2 h-2 bg-spy-green rounded-full pulse-glow"></div>
-                        <span className="font-mono-tech text-xs text-spy-green tracking-[0.2em] uppercase font-bold">VOTING ACTIVE</span>
+                <div className="flex flex-col items-center gap-6 w-full max-w-sm mx-auto mb-2 animate-in fade-in zoom-in duration-500">
+                    {/* Top Logo Container */}
+                    <div className="text-center">
+                        <img src="/assets/Invento-logo.png" alt="INVENTO" className="w-20 h-20 mx-auto" />
+                    </div>
+
+                    {/* Participant Details */}
+                    <div className="flex flex-col items-center text-center w-full">
+                        <h2 className="font-orbitron font-bold text-3xl md:text-4xl text-white uppercase tracking-wider leading-none mb-4 drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+                            {participant ? participant.name : 'AGENT'}
+                        </h2>
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-spy-green bg-spy-green/10 shadow-[0_0_10px_rgba(0,255,65,0.2)] rounded-full">
+                            <div className="w-2 h-2 bg-spy-green rounded-full pulse-glow"></div>
+                            <span className="font-mono-tech text-[10px] text-spy-green tracking-[0.2em] font-bold uppercase">VOTING ACTIVE</span>
+                        </div>
                     </div>
                 </div>
 
@@ -295,6 +335,18 @@ function Voting() {
                         </button>
                     </div>
                 )}
+            </div>
+
+            {/* Fixed Developers Button */}
+            <div className="fixed bottom-8 left-0 w-full flex justify-center z-50 pointer-events-none px-4">
+                <Link to="/developers" className="pointer-events-auto group relative inline-flex items-center justify-center px-8 py-3.5 font-orbitron font-bold text-xs md:text-sm tracking-[0.2em] text-white transition-all duration-500 hover:scale-110 hover:-translate-y-1">
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-900 transform -skew-x-[15deg] transition-all duration-500 shadow-[0_0_20px_rgba(220,38,38,0.5)] group-hover:shadow-[0_0_40px_rgba(220,38,38,0.8)] border-t border-b border-red-500/50"></div>
+                    <div className="absolute inset-0 bg-[url('/assets/grid.svg')] opacity-20 mix-blend-overlay transform -skew-x-[15deg]"></div>
+                    <span className="relative flex items-center gap-3 drop-shadow-md">
+                        <Code className="w-5 h-5 text-red-200 group-hover:text-white group-hover:animate-pulse" />
+                        MEET THE DEVELOPERS
+                    </span>
+                </Link>
             </div>
         </div>
     );
