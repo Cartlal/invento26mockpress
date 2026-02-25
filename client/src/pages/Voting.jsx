@@ -180,7 +180,7 @@ function Voting() {
                 {hasVoted ? (
                     /* Voted confirmation */
                     <div className="sp-fade-in">
-                        <div className="text-[#C0392B] text-7xl font-black mb-3 leading-none">OK</div>
+                        <div className="text-[#C0392B] text-7xl font-black mb-3 leading-none">Submitted</div>
                         <p className="text-[10px] tracking-[0.35em] text-white/30 uppercase">Signal received</p>
                     </div>
                 ) : (
