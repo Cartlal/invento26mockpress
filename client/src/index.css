@@ -52,31 +52,7 @@ body {
   opacity: 0.3;
 }
 
-.scanlines::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background: linear-gradient(to bottom,
-      rgba(0, 255, 65, 0.1) 0%,
-      transparent 100%);
-  animation: scan 8s linear infinite;
-  pointer-events: none;
-  z-index: 2;
-}
-
-@keyframes scan {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(100vh);
-  }
-}
-
+/* Moving green scanline removed per request */
 /* Glitch Effect */
 .glitch {
   position: relative;
