@@ -1,51 +1,25 @@
-import { Users, TrendingUp } from 'lucide-react';
-import { serverUrl as SERVER_URL } from '../../config';
-
-function VotingView({ participant, liveStats, average }) {
+export default function VotingView({ participant }) {
     return (
-        <div className="w-full max-w-7xl animate-in fade-in slide-in-from-right-10 duration-700 px-6">
-            <div className="flex items-start gap-16">
-                {/* Left Side: Photo Dossier */}
-                {participant.photoUrl && (
-                    <div className="relative group flex-shrink-0">
-                        <div className="absolute -inset-4 bg-spy-green opacity-10 blur-2xl"></div>
-                        <div className="relative">
-                            {/* HUD Corners for Image */}
-                            <div className="absolute -top-4 -left-4 w-12 h-12 border-t-4 border-l-4 border-spy-green"></div>
-                            <div className="absolute -top-4 -right-4 w-12 h-12 border-t-4 border-r-4 border-spy-green"></div>
-                            <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-4 border-l-4 border-spy-green"></div>
-                            <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-4 border-r-4 border-spy-green"></div>
-
-                            <img
-                                src={`${SERVER_URL}${participant.photoUrl}`}
-                                alt={participant.name}
-                                className="w-[450px] h-[450px] object-cover border-2 border-spy-green/30"
-                            />
-                        </div>
-                    </div>
+        <div className="flex flex-col items-center justify-center gap-8 w-full h-full"
+            style={{ fontFamily: "Inter, sans-serif" }}>
+            <div className="text-center">
+                <p className="text-[10px] font-bold tracking-[0.5em] text-white/25 uppercase mb-4">Now Voting</p>
+                <h2 className="text-6xl font-black text-white uppercase tracking-tight leading-none">
+                    {participant?.name?.split(" ")[0] || "—"}
+                </h2>
+                {participant?.name?.split(" ")?.length > 1 && (
+                    <h2 className="text-6xl font-black text-[#C0392B] uppercase tracking-tight leading-none">
+                        {participant.name.split(" ").slice(1).join(" ")}
+                    </h2>
                 )}
-
-                {/* Right Side: Identity Details */}
-                <div className="flex-1 text-left">
-                    <h1 className="font-orbitron text-[90px] font-black text-white mb-4 leading-none uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] mt-12">
-                        {participant.name}
-                    </h1>
-
-                    <div className="flex flex-col gap-8">
-                        <div className="inline-flex items-center gap-6 bg-spy-green/10 border-2 border-spy-green px-10 py-5 group hover:bg-spy-green/20 transition-all max-w-md">
-                            <div className="relative">
-                                <div className="w-6 h-6 bg-spy-green rounded-full pulse-glow"></div>
-                                <div className="absolute inset-0 bg-spy-green rounded-full animate-ping"></div>
-                            </div>
-                            <span className="font-orbitron text-3xl font-black text-spy-green tracking-[0.2em]">
-                                VOTING ACTIVE
-                            </span>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#C0392B]"
+                    style={{ animation: "sp-blink 1.2s ease-in-out infinite" }} />
+                <span className="text-[11px] font-bold tracking-[0.45em] text-[#C0392B] uppercase">
+                    Accepting Votes
+                </span>
             </div>
         </div>
     );
 }
-
-export default VotingView;

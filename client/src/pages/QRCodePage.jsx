@@ -3,6 +3,7 @@ import axios from "axios";
 import { socket } from "../socket";
 import QRView from "../components/display/QRView";
 import { apiUrl as API_URL } from "../config";
+import '../index1.css';
 
 function QRCodePage() {
     const [eventState, setEventState] = useState(null);

@@ -1,34 +1,20 @@
-import { Target } from 'lucide-react';
-
-function StandbyView() {
+export default function StandbyView() {
     return (
-        <div className="w-full max-w-6xl animate-in fade-in zoom-in duration-1000">
-            <div className="flex items-center justify-center gap-20">
-                {/* Left Side: Logo */}
-                <div className="relative flex-shrink-0">
-                    <img
-                        src="/assets/Invento-logo.png"
-                        alt="INVENTO"
-                        className="w-80 h-80 object-contain relative z-10"
-                    />
-                </div>
+        <div className="flex flex-col items-center justify-center gap-8 w-full h-full"
+            style={{ fontFamily: "Inter, sans-serif" }}>
+            <img src="/assets/Invento-logo.png" alt="INVENTO" className="h-56 opacity-80" />
 
-                {/* Right Side: Mission Info */}
-                <div className="text-left flex-1 border-l-2 border-spy-red/20 pl-20 py-10">
-                    <div className="space-y-4 mb-12">
-                        <h1 className="font-orbitron text-[100px] font-black text-white leading-none tracking-wider glitch">
-                            INVENTO <span className="text-spy-red">2026</span>
-                        </h1>
-                        <div className="inline-block bg-spy-red px-10 py-4 transform -rotate-1 shadow-[10px_10px_0_rgba(0,0,0,0.5)]">
-                            <p className="font-orbitron text-3xl font-bold text-black tracking-[0.3em]">
-                                MOCK PRESS CONFERENCE
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#C0392B]"
+                    style={{ animation: "sp-blink 1.2s ease-in-out infinite" }} />
+                <span className="text-[11px] font-bold tracking-[0.5em] text-white/30 uppercase">
+                    Standby
+                </span>
+            </div>
+
+            <div className="text-center">
+                <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="h-8 mx-auto opacity-20" />
             </div>
         </div>
     );
 }
-
-export default StandbyView;

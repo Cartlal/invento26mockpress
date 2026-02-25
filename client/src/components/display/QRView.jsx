@@ -1,42 +1,39 @@
-import { QrCode } from 'lucide-react';
-
-function QRView({ qrCodeUrl }) {
+export default function QRView({ qrCodeUrl }) {
     return (
-        <div className="w-full max-w-6xl animate-in fade-in zoom-in duration-1000">
-            <div className="flex items-center justify-center gap-20">
-                {/* Left Side: QR Code Area (Replacing Logo) */}
-                <div className="relative flex-shrink-0">
-                    <div className="bg-white p-6 shadow-[0_0_40px_rgba(255,0,0,0.1)] relative z-10">
-                        {qrCodeUrl ? (
-                            <img
-                                src={qrCodeUrl}
-                                alt="Voting QR Code"
-                                className="w-80 h-80 object-contain"
-                            />
-                        ) : (
-                            <div className="w-80 h-80 flex items-center justify-center bg-gray-100">
-                                <QrCode className="w-20 h-20 text-gray-300" />
-                            </div>
-                        )}
+        <div className="flex items-center justify-center gap-16 w-full h-full"
+            style={{ fontFamily: "Inter, sans-serif" }}>
+
+            {/* QR code */}
+            <div className="bg-white p-5 shadow-2xl flex-shrink-0">
+                {qrCodeUrl ? (
+                    <img src={qrCodeUrl} alt="QR Code" className="w-100 h-100 object-contain" />
+                ) : (
+                    <div className="w-72 h-72 flex items-center justify-center bg-white">
+                        <p className="text-[10px] text-black/30 tracking-widest uppercase">No QR Loaded</p>
                     </div>
+                )}
+            </div>
+
+            {/* Right: text + status */}
+            <div className="flex flex-col gap-6">
+                <div>
+                    <p className="text-[18px] font-bold tracking-[0.6em] text-white/30 uppercase mb-4">Scan to Vote</p>
+                    <h2 className="text-8xl font-black text-white uppercase tracking-tight leading-none">
+                        Cast Your
+                    </h2>
+                    <h2 className="text-7xl font-black text-[#C0392B] uppercase tracking-tight leading-none">
+                        Vote
+                    </h2>
                 </div>
 
-                {/* Right Side: Mission Ident (Matching Standby) */}
-                <div className="text-left flex-1 border-l-2 border-spy-red/20 pl-20 py-10">
-                    <div className="space-y-4">
-                        <h1 className="font-orbitron text-[100px] font-black text-white leading-none tracking-wider glitch">
-                            INVENTO <span className="text-spy-red">2026</span>
-                        </h1>
-                        <div className="inline-block bg-spy-red px-10 py-4 transform -rotate-1 shadow-[10px_10px_0_rgba(0,0,0,0.5)]">
-                            <p className="font-orbitron text-3xl font-bold text-black tracking-[0.3em]">
-                                SCAN TO VOTE
-                            </p>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#C0392B]"
+                        style={{ animation: "sp-blink 1.2s ease-in-out infinite" }} />
+                    <span className="text-[10px] font-bold tracking-[0.4em] text-[#C0392B] uppercase">
+                        Voting Open
+                    </span>
                 </div>
             </div>
         </div>
     );
 }
-
-export default QRView;
