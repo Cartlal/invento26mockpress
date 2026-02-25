@@ -180,7 +180,7 @@ function Voting() {
                 {hasVoted ? (
                     /* Voted confirmation */
                     <div className="sp-fade-in">
-                        <div className="text-[#C0392B] text-7xl font-black mb-3 leading-none">Submitted</div>
+                        <div className="text-[#C0392B] text-5xl font-black mb-3 leading-none">Submitted</div>
                         <p className="text-[10px] tracking-[0.35em] text-white/30 uppercase">Signal received</p>
                     </div>
                 ) : (
@@ -233,7 +233,7 @@ function Voting() {
 
 function MeetDevsBtn() {
     return (
-        <div className="flex justify-center pb-7 pt-4">
+        <div className="flex justify-center pb-20 pt-4">
             <Link to="/developers"
                 className="group relative inline-flex items-center justify-center px-8 py-3 bg-[#C0392B] text-white font-bold text-[10px] tracking-[0.3em] uppercase transition-all overflow-hidden"
                 style={{ clipPath: "polygon(5% 0, 100% 0, 95% 100%, 0 100%)" }}>
