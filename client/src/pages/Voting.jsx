@@ -233,10 +233,19 @@ function Voting() {
 
 function MeetDevsBtn() {
     return (
-        <div className="flex justify-center pb-7 pt-2">
+        <div className="flex justify-center pb-7 pt-4">
             <Link to="/developers"
-                className="text-[9px] tracking-[0.4em] text-white/15 uppercase hover:text-[#C0392B] transition-colors">
-                Meet the Developers
+                className="group relative inline-flex items-center justify-center px-8 py-3 bg-[#C0392B] text-white font-bold text-[10px] tracking-[0.3em] uppercase transition-all overflow-hidden"
+                style={{ clipPath: "polygon(5% 0, 100% 0, 95% 100%, 0 100%)" }}>
+
+                {/* Hover effect gradient */}
+                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+
+                {/* Button Content */}
+                <span className="flex items-center gap-2 relative z-10">
+                    <span className="text-white/70 font-mono tracking-widest leading-none mt-[1px]">&lt;&gt;</span>
+                    MEET THE DEVELOPERS
+                </span>
             </Link>
         </div>
     );
