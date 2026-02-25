@@ -19,10 +19,10 @@ export default function QRView({ qrCodeUrl }) {
                 <div>
                     <p className="text-[18px] font-bold tracking-[0.6em] text-white/30 uppercase mb-4">Scan to Vote</p>
                     <h2 className="text-8xl font-black text-white uppercase tracking-tight leading-none">
-                        Cast Your
+                        Mock Press 
                     </h2>
                     <h2 className="text-7xl font-black text-[#C0392B] uppercase tracking-tight leading-none">
-                        Vote
+                        Audience Voting
                     </h2>
                 </div>
 
