@@ -22,7 +22,7 @@ export default function QRView({ qrCodeUrl }) {
                         Mock Press 
                     </h2>
                     <h2 className="text-7xl font-black text-[#C0392B] uppercase tracking-tight leading-none">
-                        Audience Voting
+                        Audience Poll
                     </h2>
                 </div>
 
