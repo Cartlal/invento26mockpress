@@ -82,18 +82,18 @@ function Display() {
             {/* Header */}
             <header className="flex items-center justify-between px-8 py-4 border-b border-white/[0.06] flex-shrink-0 bg-black/95 z-50">
                 <div className="flex items-center gap-5">
-                    <img src="/assets/Invento-logo.png" alt="INVENTO" className="h-9 opacity-90" />
+                    <img src="/assets/Invento-logo.png" alt="INVENTO" className="h-14 opacity-90" />
                     <div>
-                        <h1 className="text-base font-black text-white uppercase tracking-wider leading-none">
+                        <h1 className="text-base text-[25px] font-black text-white uppercase tracking-wider leading-none">
                             Into the <span className="text-[#C0392B]">Spyverse</span>
                         </h1>
-                        <p className="text-[9px] text-white/20 tracking-[0.35em] uppercase mt-0.5">Mock Press Protocol</p>
+                        <p className="text-[10px] text-white/20 tracking-[0.35em] uppercase mt-0.5">Mock Press Protocol</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-5">
-                    <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="h-7 opacity-50" />
+                    <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="h-16 opacity-90" />
                     <div className="border border-white/[0.06] px-4 py-2">
-                        <span className="text-[#C0392B] font-bold text-sm tracking-widest font-mono">{time}</span>
+                        <span className="text-[#C0392B] font-bold text-m tracking-widest font-mono">{time}</span>
                     </div>
                 </div>
             </header>
@@ -102,13 +102,6 @@ function Display() {
             <div className="flex-1 flex items-center justify-center overflow-hidden relative">
                 {renderContent()}
             </div>
-
-            {/* Footer ticker */}
-            <footer className="flex-shrink-0 bg-[#C0392B] border-t border-[#C0392B] py-2.5 overflow-hidden z-20">
-                <div className="sp-marquee text-[11px] font-bold text-black tracking-[0.25em] uppercase">
-                    &nbsp;&nbsp;&nbsp;&nbsp;+++ MOCK PRESS CONFERENCE IN PROGRESS +++ TARGET IDENTIFIED +++ LIVE VOTING PROTOCOL ENGAGED +++ SYSTEM AUTHENTICATED +++ INVENTO 2026 +++ MISSION STATUS: ACTIVE +++&nbsp;&nbsp;&nbsp;&nbsp;+++ MOCK PRESS CONFERENCE IN PROGRESS +++ TARGET IDENTIFIED +++ LIVE VOTING PROTOCOL ENGAGED +++ SYSTEM AUTHENTICATED +++ INVENTO 2026 +++ MISSION STATUS: ACTIVE +++
-                </div>
-            </footer>
         </div>
     );
 }
