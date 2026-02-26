@@ -11,7 +11,7 @@ function Voting() {
     const [participant, setParticipant] = useState(null);
     const [hasVoted, setHasVoted] = useState(false);
     const [voteSubmitting, setVoteSubmitting] = useState(false);
-    const [selectedScore, setSelectedScore] = useState(7);
+    const [selectedScore, setSelectedScore] = useState(0);
     const [voterName, setVoterName] = useState("");
     const [voterPhone, setVoterPhone] = useState("");
 
@@ -41,7 +41,7 @@ function Voting() {
                 const newId = newState.currentParticipantId?._id;
                 if (newId && newId !== prev?._id) {
                     setHasVoted(false);
-                    setSelectedScore(7);
+                    setSelectedScore(0);
                     return newState.currentParticipantId;
                 }
                 return prev;
@@ -194,7 +194,7 @@ function Voting() {
                                     className={`h-11 text-sm font-bold transition-all duration-150
                     ${selectedScore === n
                                             ? "bg-[#C0392B] text-white"
-                                            : selectedScore > n
+                                            : selectedScore > 0 && selectedScore > n
                                                 ? "bg-[#C0392B]/20 text-[#C0392B]/60"
                                                 : "bg-white/[0.04] text-white/25 hover:bg-white/[0.08] hover:text-white/60"
                                         }`}>
@@ -215,13 +215,13 @@ function Voting() {
                         {/* Submit */}
                         <button
                             onClick={handleVote}
-                            disabled={voteSubmitting}
+                            disabled={voteSubmitting || selectedScore === 0}
                             className={`w-full py-4 text-xs font-bold tracking-[0.4em] uppercase transition-all duration-300
-                border ${voteSubmitting
+                border ${voteSubmitting || selectedScore === 0
                                     ? "border-white/10 text-white/20 cursor-not-allowed"
                                     : "border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
                                 }`}>
-                            {voteSubmitting ? "SUBMITTING..." : "Submit"}
+                            {voteSubmitting ? "SUBMITTING..." : selectedScore === 0 ? "Select a score" : "Submit"}
                         </button>
                     </>
                 )}
