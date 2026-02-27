@@ -11,10 +11,7 @@ export default function StandbyView() {
                     Standby
                 </span>
             </div>
-
-            <div className="text-center">
-                <img src="/assets/KLE-TECH.webp" alt="KLE Tech" className="h-8 mx-auto opacity-20" />
-            </div>
+            <h1 className="text-base text-[36px] text-[#C0392B] font-black uppercase tracking-wider leading-none">Mock Press</h1>
         </div>
     );
 }
