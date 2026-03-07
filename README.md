@@ -2,7 +2,7 @@
 ## Comprehensive Project Documentation
 
 ### 1. Introduction & Overview
-**Project Spyglass 2.0** is a comprehensive, high-stakes real-time voting and cinematic display system engineered for the **Invento 2026 Mock Press** event. This robust system handles live audience evaluation and ultra-responsive projector displays with a curated "Cyber-Spy" aesthetic.
+**Project INVENTO MOCKPRESS VOTING SYSTEM ** is a comprehensive, high-stakes real-time voting and cinematic display system engineered for the **Invento 2026 Mock Press** event. This robust system handles live audience evaluation and ultra-responsive projector displays with a curated "Cyber-Spy" aesthetic.
 
 It is split into two primary environments:
 - **Client**: A React (Vite) frontend application serving the Voters, the Administrator Controllers, and the Live Projector Display.
