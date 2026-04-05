@@ -9,8 +9,6 @@ A premium, high-stakes real-time voting and cinematic display system engineered 
 
 ## 🌟 Key Features
 
-
-
 ### 🗳️ Secure Voting Interface
 *   **Agent Identity Protocol**: Voters authenticate via **Codename** and **Phone Number**.
 *   **Anti-Fraud Tracking**: Triple-layer verification (IP, Device Hash, and Identify) to ensure 100% fair play.
