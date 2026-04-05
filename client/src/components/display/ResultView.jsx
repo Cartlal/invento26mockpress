@@ -15,7 +15,7 @@ export default function ResultView({ participant }) {
         setDisplayScore(0);
         if (!finalScore) return;
 
-        const duration = 2000; // ms
+        const duration = 5000; // ms
         const start = performance.now();
 
         const animate = (now) => {
