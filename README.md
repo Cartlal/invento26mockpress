@@ -17,16 +17,15 @@ It is split into two primary environments:
 - **Icons**: Lucide React.
 - **Real-time Comms**: `socket.io-client` for seamless state transitions across devices.
 
-**Backend Layer**:
-- **Runtime**: Node.js with Express.js.
-- **Database**: MongoDB Atlas via Mongoose ODM.
-- **Caching & Sockets**: Socket.io handles bidirectional event pushing (voting counts, display mode swaps).
-- **Hosting**: Pre-configured for Render.com (`render.yaml`).
+### 🗳️ Secure Voting Interface
+*   **Agent Identity Protocol**: Voters authenticate via **Codename** and **Phone Number**.
+*   **Anti-Fraud Tracking**: Triple-layer verification (IP, Device Hash, and Identify) to ensure 100% fair play.
+*   **Live Average Score**: Real-time score aggregation shown on the main display upon result reveal.
 
----
-
-### 3. Application Architecture & Data Models
-The application relies strictly on MongoDB collections to manage its state and history.
+### 🖥️ Display Control Center (The HUD)
+*   **Director Mode**: Central hub for toggling Voting, Results, or Standby modes.
+*   **Live Preview**: Real-time "Monitor" view of exactly what the audience is seeing.
+*   **Hard Reset Protocol**: One-click emergency flush button to clear memory/cache if the system hangs.
 
 #### 3.1 MongoDB Models (`server/models/`)
 *   **`Participant.js`**: Contains information about the contestant/character being evaluated (Name, Code, Image).
